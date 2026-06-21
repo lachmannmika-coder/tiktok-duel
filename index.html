@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Follower-Duell</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0a0c12; --card:#141824; --card2:#1c2130; --line:#272d3d;
+    --txt:#eef1f8; --muted:#878da1;
+    --cyan:#25F4EE; --pink:#FE2C55; --gold:#ffd34d; --green:#3ddc84;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1100px 560px at 50% -12%,#1a1f33 0%,var(--bg) 58%);
+    color:var(--txt);min-height:100vh;padding:26px 16px 64px;
+  }
+  .wrap{max-width:880px;margin:0 auto}
+  header{text-align:center;margin-bottom:6px}
+  h1{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .duo{font-size:30px;font-weight:800;margin-top:6px;letter-spacing:.5px}
+  .duo .a{color:var(--cyan)} .duo .b{color:var(--pink)} .duo .x{color:var(--muted);font-weight:600;margin:0 10px}
+
+  .board{
+    margin:20px auto 24px;max-width:560px;text-align:center;
+    background:linear-gradient(135deg,rgba(255,211,77,.13),rgba(255,211,77,.03));
+    border:1px solid rgba(255,211,77,.32);border-radius:18px;padding:16px 20px;
+  }
+  .board .score{font-size:38px;font-weight:800;letter-spacing:2px}
+  .board .score .a{color:var(--cyan)} .board .score .b{color:var(--pink)} .board .score .sep{color:var(--muted);margin:0 8px}
+  .board .msg{color:var(--txt);opacity:.85;font-size:14px;margin-top:6px;line-height:1.5}
+
+  .cards{display:grid;grid-template-columns:1fr 52px 1fr;align-items:start;gap:0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;transition:.3s}
+  .card.lead{box-shadow:0 0 0 1px currentColor,0 14px 46px -20px currentColor}
+  .cA{color:var(--cyan)} .cB{color:var(--pink)}
+  .chead{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+  .ava{width:44px;height:44px;border-radius:50%;background:currentColor;display:grid;place-items:center;flex:none}
+  .ava b{color:#0a0c12;font-size:19px;font-weight:800}
+  .who{min-width:0}
+  .nick{font-weight:700;font-size:15px;color:var(--txt);line-height:1.1}
+  .at{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .crown{margin-left:auto;font-size:17px;opacity:0;transition:.3s}
+  .card.lead .crown{opacity:1}
+  .foll{font-size:42px;font-weight:800;color:var(--txt);line-height:1}
+  .folllbl{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-top:3px}
+  .gain{display:inline-block;margin-top:11px;font-size:12.5px;font-weight:700;color:var(--green);
+    background:rgba(61,220,132,.1);border:1px solid rgba(61,220,132,.25);border-radius:20px;padding:4px 11px}
+  .gain.neg{color:var(--pink);background:rgba(254,44,85,.1);border-color:rgba(254,44,85,.25)}
+  .gain.flat{color:var(--muted);background:var(--card2);border-color:var(--line)}
+  .subs{display:flex;gap:18px;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  .sub .v{font-size:17px;font-weight:700;color:var(--txt)}
+  .sub .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-top:2px}
+
+  .mid{display:grid;place-items:center;padding-top:72px}
+  .mid .vs{width:46px;height:46px;border-radius:50%;background:var(--card);border:1px solid var(--line);
+    display:grid;place-items:center;font-weight:800;color:var(--muted);font-size:15px}
+
+  .panel{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+  .panel h2{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;
+    display:flex;justify-content:space-between;align-items:center}
+  .panel h2 .leg span{font-size:11px;margin-left:12px;font-weight:700}
+  .leg .la{color:var(--cyan)} .leg .lb{color:var(--pink)}
+  .chartbox{position:relative;height:240px}
+  .startnote{color:var(--muted);font-size:12.5px;text-align:center;margin-top:12px;line-height:1.5}
+
+  .foot{color:var(--muted);font-size:11.5px;text-align:center;margin-top:24px;line-height:1.7}
+  @media(max-width:600px){
+    .cards{grid-template-columns:1fr;gap:12px}
+    .mid{padding:0}.mid .vs{margin:0 auto}
+    .subs{gap:14px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Follower-Duell</h1>
+    <div class="duo"><span class="a" id="duo-a">–</span><span class="x">⚔</span><span class="b" id="duo-b">–</span></div>
+  </header>
+
+  <div class="board">
+    <div class="score"><span class="a" id="sa">0</span><span class="sep">:</span><span class="b" id="sb">0</span></div>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="cards">
+    <div class="card cA" id="card-a">
+      <div class="chead">
+        <div class="ava"><b id="ini-a">A</b></div>
+        <div class="who"><div class="nick" id="nick-a">A</div><div class="at" id="at-a">@</div></div>
+        <div class="crown">👑</div>
+      </div>
+      <div class="foll" id="foll-a">0</div>
+      <div class="folllbl">Follower</div>
+      <div class="gain flat" id="gain-a">–</div>
+      <div class="subs">
+        <div class="sub"><div class="v" id="likes-a">0</div><div class="l">Likes</div></div>
+        <div class="sub"><div class="v" id="vids-a">0</div><div class="l">Videos</div></div>
+        <div class="sub"><div class="v" id="lpv-a">0</div><div class="l">Ø Likes/Vid</div></div>
+      </div>
+    </div>
+
+    <div class="mid"><div class="vs">VS</div></div>
+
+    <div class="card cB" id="card-b">
+      <div class="chead">
+        <div class="ava"><b id="ini-b">B</b></div>
+        <div class="who"><div class="nick" id="nick-b">B</div><div class="at" id="at-b">@</div></div>
+        <div class="crown">👑</div>
+      </div>
+      <div class="foll" id="foll-b">0</div>
+      <div class="folllbl">Follower</div>
+      <div class="gain flat" id="gain-b">–</div>
+      <div class="subs">
+        <div class="sub"><div class="v" id="likes-b">0</div><div class="l">Likes</div></div>
+        <div class="sub"><div class="v" id="vids-b">0</div><div class="l">Videos</div></div>
+        <div class="sub"><div class="v" id="lpv-b">0</div><div class="l">Ø Likes/Vid</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Follower-Verlauf
+      <span class="leg"><span class="la" id="leg-a">A</span><span class="lb" id="leg-b">B</span></span>
+    </h2>
+    <div class="chartbox"><canvas id="chart"></canvas></div>
+    <div class="startnote" id="startnote"></div>
+  </div>
+
+  <div class="foot" id="foot">
+    Daten: TikTok (öffentliche Profile) · aktualisiert sich täglich, sobald online gehostet.
+  </div>
+</div>
+
+<script>
+// Fallback-Startdaten, damit die Datei auch lokal (Doppelklick) etwas zeigt.
+// Online (GitHub Pages) wird stattdessen data/history.json geladen.
+const SEED = {
+  creators:{ a:{handle:"mika.nature.enjoyer",nickname:"Mika"}, b:{handle:"tinooutdoor",nickname:"OutdoorTino"} },
+  snapshots:[ {date:"2026-06-21", a:{followers:129,following:453,likes:23057,videos:30}, b:{followers:24,following:19,likes:858,videos:7}} ]
+};
+
+const fmt = n => Math.round(n).toLocaleString("de-CH");
+const deDate = iso => { const [y,m,d]=iso.split("-"); return d+"."+m+"."+y.slice(2); };
+
+async function loadData(){
+  try{
+    const r = await fetch("data/history.json", {cache:"no-store"});
+    if(r.ok){ const j = await r.json(); if(j.snapshots?.length) return j; }
+  }catch(e){}
+  return SEED; // lokal geöffnet
+}
+
+function gainOverWeek(snaps, side){
+  const last = snaps[snaps.length-1];
+  const lastDate = new Date(last.date);
+  // jüngsten Schnappschuss finden, der >= 7 Tage zurück liegt; sonst den ersten
+  let base = snaps[0];
+  for(let i=snaps.length-1;i>=0;i--){
+    const diff = (lastDate - new Date(snaps[i].date)) / 86400000;
+    if(diff >= 7){ base = snaps[i]; break; }
+  }
+  return { gain: last[side].followers - base[side].followers, sameAsNow: base===last };
+}
+
+function render(db){
+  const A=db.creators.a, B=db.creators.b, snaps=db.snapshots;
+  const cur=snaps[snaps.length-1];
+
+  document.getElementById("duo-a").textContent=A.nickname;
+  document.getElementById("duo-b").textContent=B.nickname;
+  document.getElementById("nick-a").textContent=A.nickname;
+  document.getElementById("nick-b").textContent=B.nickname;
+  document.getElementById("at-a").textContent="@"+A.handle;
+  document.getElementById("at-b").textContent="@"+B.handle;
+  document.getElementById("ini-a").textContent=A.nickname[0].toUpperCase();
+  document.getElementById("ini-b").textContent=B.nickname[0].toUpperCase();
+  document.getElementById("leg-a").textContent=A.nickname;
+  document.getElementById("leg-b").textContent=B.nickname;
+
+  countUp("foll-a", cur.a.followers);
+  countUp("foll-b", cur.b.followers);
+  document.getElementById("likes-a").textContent=fmt(cur.a.likes);
+  document.getElementById("likes-b").textContent=fmt(cur.b.likes);
+  document.getElementById("vids-a").textContent=fmt(cur.a.videos);
+  document.getElementById("vids-b").textContent=fmt(cur.b.videos);
+  document.getElementById("lpv-a").textContent=fmt(cur.a.likes/Math.max(cur.a.videos,1));
+  document.getElementById("lpv-b").textContent=fmt(cur.b.likes/Math.max(cur.b.videos,1));
+
+  const ga=gainOverWeek(snaps,"a"), gb=gainOverWeek(snaps,"b");
+  setGain("gain-a", ga); setGain("gain-b", gb);
+
+  // Scoreboard: wer führt in mehr Kategorien
+  const lpv = c => c.likes/Math.max(c.videos,1);
+  const cats = [
+    cur.a.followers - cur.b.followers,
+    cur.a.likes - cur.b.likes,
+    cur.a.videos - cur.b.videos,
+    lpv(cur.a) - lpv(cur.b),
+    ga.gain - gb.gain
+  ];
+  let sa=0, sb=0; cats.forEach(d=>{ if(d>0)sa++; else if(d<0)sb++; });
+  document.getElementById("sa").textContent=sa;
+  document.getElementById("sb").textContent=sb;
+  document.getElementById("card-a").classList.toggle("lead", sa>sb);
+  document.getElementById("card-b").classList.toggle("lead", sb>sa);
+  document.getElementById("msg").textContent=message(A,B,cur,sa,sb,ga,gb);
+
+  drawChart(db);
+  startNote(snaps.length);
+}
+
+function setGain(id, g){
+  const el=document.getElementById(id);
+  el.classList.remove("neg","flat");
+  if(g.sameAsNow){ el.textContent="Verlauf startet"; el.classList.add("flat"); return; }
+  el.textContent=(g.gain>=0?"+":"")+fmt(g.gain)+" / 7 Tage";
+  if(g.gain<0) el.classList.add("neg");
+  else if(g.gain===0) el.classList.add("flat");
+}
+
+function message(A,B,cur,sa,sb,ga,gb){
+  const gap=Math.abs(cur.a.followers-cur.b.followers);
+  if(sa===sb) return "Gleichstand. Der nächste gute Post entscheidet.";
+  const leadNick = sa>sb?A.nickname:B.nickname;
+  const behindNick = sa>sb?B.nickname:A.nickname;
+  const behindGain = sa>sb?gb:ga;
+  const leadGain = sa>sb?ga:gb;
+  let m = `${leadNick} führt ${Math.max(sa,sb)}:${Math.min(sa,sb)}. ${behindNick} liegt ${fmt(gap)} Follower zurück`;
+  if(!behindGain.sameAsNow && !leadGain.sameAsNow && behindGain.gain>leadGain.gain)
+    m += `, legt diese Woche aber schneller zu — dranbleiben.`;
+  else m += `. Ein viraler Post dreht das.`;
+  return m;
+}
+
+let chart;
+function drawChart(db){
+  const snaps=db.snapshots;
+  const labels=snaps.map(s=>deDate(s.date));
+  const dataA=snaps.map(s=>s.a.followers);
+  const dataB=snaps.map(s=>s.b.followers);
+  const ctx=document.getElementById("chart");
+  const css=getComputedStyle(document.documentElement);
+  const cyan=css.getPropertyValue("--cyan").trim(), pink=css.getPropertyValue("--pink").trim();
+  const grid="rgba(255,255,255,.06)", muted=css.getPropertyValue("--muted").trim();
+  if(chart) chart.destroy();
+  chart=new Chart(ctx,{
+    type:"line",
+    data:{labels,datasets:[
+      {label:db.creators.a.nickname,data:dataA,borderColor:cyan,backgroundColor:cyan,tension:.3,pointRadius:snaps.length<2?6:3,pointHoverRadius:6,borderWidth:2.5},
+      {label:db.creators.b.nickname,data:dataB,borderColor:pink,backgroundColor:pink,tension:.3,pointRadius:snaps.length<2?6:3,pointHoverRadius:6,borderWidth:2.5}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{color:grid},ticks:{color:muted,maxRotation:0,autoSkipPadding:16}},
+        y:{grid:{color:grid},ticks:{color:muted},beginAtZero:false}
+      }
+    }
+  });
+}
+
+function startNote(n){
+  const el=document.getElementById("startnote");
+  if(n<2) el.textContent="Noch ein Datenpunkt. Ab dem nächsten täglichen Schnappschuss wächst die Kurve — Verlauf lässt sich nicht rückwirkend bauen.";
+  else el.textContent="";
+}
+
+const anim={};
+function countUp(id, target){
+  const el=document.getElementById(id);
+  cancelAnimationFrame(anim[id]);
+  const start=0, t0=performance.now(), dur=750;
+  function step(t){
+    const p=Math.min((t-t0)/dur,1), e=1-Math.pow(1-p,3);
+    el.textContent=fmt(start+(target-start)*e);
+    if(p<1) anim[id]=requestAnimationFrame(step);
+  }
+  anim[id]=requestAnimationFrame(step);
+}
+
+loadData().then(render);
+</script>
+</body>
+</html>
