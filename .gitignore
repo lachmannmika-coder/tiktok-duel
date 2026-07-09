@@ -1,0 +1,7 @@
+# Lokales Tooling & Arbeitsdateien — gehoeren nicht ins oeffentliche Repo
+.agents/
+.claude/
+Planung/
+graphify-out/
+node_modules/
+skills-lock.json

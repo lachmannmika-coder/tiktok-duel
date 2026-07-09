@@ -1,0 +1,10 @@
+{
+  "creators": {
+    "a": { "handle": "mika.nature.enjoyer", "nickname": "Mika" },
+    "b": { "handle": "tinooutdoor", "nickname": "OutdoorTino" }
+  },
+  "snapshots": [
+    { "date": "2026-06-20", "a": { "followers": 100, "following": 60, "likes": 1000, "videos": 10 }, "b": { "followers": 200, "following": 60, "likes": 500, "videos": 8 } },
+    { "date": "2026-06-21", "a": { "followers": 105, "following": 60, "likes": 1020, "videos": 11 }, "b": { "followers": 205, "following": 60, "likes": 520, "videos": 9 } }
+  ]
+}

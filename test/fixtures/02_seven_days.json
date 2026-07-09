@@ -1,0 +1,15 @@
+{
+  "creators": {
+    "a": { "handle": "mika.nature.enjoyer", "nickname": "Mika" },
+    "b": { "handle": "tinooutdoor", "nickname": "OutdoorTino" }
+  },
+  "snapshots": [
+    { "date": "2026-06-15", "a": { "followers": 100, "following": 50, "likes": 1000, "videos": 10 }, "b": { "followers": 100, "following": 50, "likes": 1000, "videos": 10 } },
+    { "date": "2026-06-16", "a": { "followers": 105, "following": 50, "likes": 1050, "videos": 11 }, "b": { "followers": 101, "following": 50, "likes": 1010, "videos": 11 } },
+    { "date": "2026-06-17", "a": { "followers": 106, "following": 50, "likes": 1060, "videos": 12 }, "b": { "followers": 106, "following": 50, "likes": 1060, "videos": 12 } },
+    { "date": "2026-06-18", "a": { "followers": 111, "following": 50, "likes": 1110, "videos": 13 }, "b": { "followers": 107, "following": 50, "likes": 1070, "videos": 13 } },
+    { "date": "2026-06-19", "a": { "followers": 112, "following": 50, "likes": 1120, "videos": 14 }, "b": { "followers": 112, "following": 50, "likes": 1120, "videos": 14 } },
+    { "date": "2026-06-20", "a": { "followers": 117, "following": 50, "likes": 1170, "videos": 15 }, "b": { "followers": 113, "following": 50, "likes": 1130, "videos": 15 } },
+    { "date": "2026-06-21", "a": { "followers": 118, "following": 50, "likes": 1180, "videos": 16 }, "b": { "followers": 118, "following": 50, "likes": 1180, "videos": 16 } }
+  ]
+}

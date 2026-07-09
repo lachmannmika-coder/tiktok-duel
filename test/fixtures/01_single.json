@@ -1,0 +1,13 @@
+{
+  "creators": {
+    "a": { "handle": "mika.nature.enjoyer", "nickname": "Mika" },
+    "b": { "handle": "tinooutdoor", "nickname": "OutdoorTino" }
+  },
+  "snapshots": [
+    {
+      "date": "2026-06-21",
+      "a": { "followers": 129, "following": 453, "likes": 23057, "videos": 30 },
+      "b": { "followers": 24, "following": 19, "likes": 858, "videos": 7 }
+    }
+  ]
+}

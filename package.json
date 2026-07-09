@@ -1,0 +1,10 @@
+{
+  "name": "tiktok-duell",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DUELL - Star-Wars-inspiriertes Weltraum-Duell-Dashboard fuer zwei TikTok-Kanaele",
+  "scripts": {
+    "test": "node --test test/logic.test.js",
+    "serve": "node scripts/serve.mjs"
+  }
+}

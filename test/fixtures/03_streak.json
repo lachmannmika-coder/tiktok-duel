@@ -1,0 +1,13 @@
+{
+  "creators": {
+    "a": { "handle": "mika.nature.enjoyer", "nickname": "Mika" },
+    "b": { "handle": "tinooutdoor", "nickname": "OutdoorTino" }
+  },
+  "snapshots": [
+    { "date": "2026-06-17", "a": { "followers": 50, "following": 40, "likes": 500, "videos": 5 }, "b": { "followers": 50, "following": 40, "likes": 500, "videos": 5 } },
+    { "date": "2026-06-18", "a": { "followers": 60, "following": 40, "likes": 600, "videos": 6 }, "b": { "followers": 51, "following": 40, "likes": 505, "videos": 6 } },
+    { "date": "2026-06-19", "a": { "followers": 70, "following": 40, "likes": 700, "videos": 7 }, "b": { "followers": 52, "following": 40, "likes": 510, "videos": 7 } },
+    { "date": "2026-06-20", "a": { "followers": 80, "following": 40, "likes": 800, "videos": 8 }, "b": { "followers": 53, "following": 40, "likes": 515, "videos": 8 } },
+    { "date": "2026-06-21", "a": { "followers": 90, "following": 40, "likes": 900, "videos": 9 }, "b": { "followers": 54, "following": 40, "likes": 520, "videos": 9 } }
+  ]
+}

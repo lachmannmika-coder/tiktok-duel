@@ -4,14 +4,19 @@ on:
   schedule:
     # 06:00 UTC = 07:00 (Winter) / 08:00 (Sommer) Schweizer Zeit
     - cron: "0 6 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch: {}   # erlaubt manuelles Ausloesen ueber den Actions-Tab
 
 permissions:
   contents: write
 
+concurrency:
+  group: daily-snapshot
+  cancel-in-progress: false
+
 jobs:
   snapshot:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
