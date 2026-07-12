@@ -73,17 +73,21 @@
 
   // ---- Sidebar toggle (mobile) ----
   function initSidebar() {
-    var btn = $("menu-btn"), sidebar = $("sidebar");
+    var btn = $("menu-btn"), sidebar = $("sidebar"), scrim = $("scrim");
     if (!btn || !sidebar) return;
-    btn.addEventListener("click", function () {
-      var open = sidebar.classList.toggle("open");
+    function setOpen(open) {
+      sidebar.classList.toggle("open", open);
       btn.setAttribute("aria-expanded", open ? "true" : "false");
+      if (scrim) scrim.classList.toggle("show", open);
+    }
+    btn.addEventListener("click", function () {
+      setOpen(!sidebar.classList.contains("open"));
     });
+    if (scrim) {
+      scrim.addEventListener("click", function () { setOpen(false); });
+    }
     sidebar.querySelectorAll(".nav-item").forEach(function (a) {
-      a.addEventListener("click", function () {
-        sidebar.classList.remove("open");
-        btn.setAttribute("aria-expanded", "false");
-      });
+      a.addEventListener("click", function () { setOpen(false); });
     });
   }
 
@@ -140,6 +144,17 @@
       $("kpi-delta-videos").className = "kpi-delta flat";
       $("kpi-delta-videos").textContent = "Verlauf startet";
     }
+
+    // Versus-Balken (additiv, mit Existenz-Guards)
+    var share = L.followerShare(snaps, "a");
+    var vsA = $("vs-a"), vsB = $("vs-b");
+    if (vsA && vsB) {
+      vsA.style.width = share.pct + "%";
+      vsB.style.width = (100 - share.pct) + "%";
+    }
+    var vsPctA = $("vs-pct-a"), vsPctB = $("vs-pct-b");
+    if (vsPctA) vsPctA.textContent = A.nickname + " " + Math.round(share.pct) + "%";
+    if (vsPctB) vsPctB.textContent = Math.round(100 - share.pct) + "% " + B.nickname;
   }
 
   function todayCell(id, value) {
@@ -301,16 +316,26 @@
     var grid = "rgba(20,20,20,.06)", muted = cs.getPropertyValue("--muted").trim();
     var single = snaps.length < 2;
 
-    // Follower-Verlauf (Balken, dunkel + abgerundet, an Vorlage angelehnt)
+    // Follower-Verlauf (Linie mit sanftem Farb-Fill; Punkte sichtbar, solange es wenige Snapshots gibt)
     var fs = L.followerSeries(snaps);
     if (charts.followers) charts.followers.destroy();
-    charts.followers = new Chart($("chart-followers"), {
-      type: "bar",
+    var canvas = $("chart-followers");
+    var ctx2d = canvas.getContext("2d");
+    var gradA = ctx2d.createLinearGradient(0, 0, 0, 260);
+    gradA.addColorStop(0, colA + "24"); gradA.addColorStop(1, colA + "00");
+    var gradB = ctx2d.createLinearGradient(0, 0, 0, 260);
+    gradB.addColorStop(0, colB + "24"); gradB.addColorStop(1, colB + "00");
+    charts.followers = new Chart(canvas, {
+      type: "line",
       data: {
         labels: fs.labels.map(deDate),
         datasets: [
-          { label: db.creators.a.nickname, data: fs.a, backgroundColor: colA, borderRadius: 8, maxBarThickness: 26 },
-          { label: db.creators.b.nickname, data: fs.b, backgroundColor: colB, borderRadius: 8, maxBarThickness: 26 }
+          { label: db.creators.a.nickname, data: fs.a, borderColor: colA, backgroundColor: gradA, fill: true,
+            tension: .35, borderWidth: 2.5, pointRadius: 3.5, pointHoverRadius: 5,
+            pointBackgroundColor: colA, pointBorderColor: "#fff", pointBorderWidth: 1.5 },
+          { label: db.creators.b.nickname, data: fs.b, borderColor: colB, backgroundColor: gradB, fill: true,
+            tension: .35, borderWidth: 2.5, pointRadius: 3.5, pointHoverRadius: 5,
+            pointBackgroundColor: colB, pointBorderColor: "#fff", pointBorderWidth: 1.5 }
         ]
       },
       options: {
