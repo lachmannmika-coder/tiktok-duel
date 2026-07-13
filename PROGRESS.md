@@ -11,7 +11,7 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 |---|---|---|
 | 0 | Setup, Tests grün, Skill-Inventur, package.json bereinigt | ✅ erledigt |
 | 1 | Daten-Pipeline v2 (P0-8: posts, videos.json, viewsTotal, Avatare, --dry-run, Fixtures) | ✅ erledigt |
-| 2 | Logik TDD (score, dayWinner datums-bewusst, streak, winLoss7d, velocity, milestone, heatmap, topVideo, headToHead, spruch, dailyRows/dayGains neu) | ⬜ offen |
+| 2 | Logik TDD (score, dayWinner datums-bewusst, streak, winLoss7d, velocity, milestone, heatmap, topVideo, headToHead, spruch, dailyRows/dayGains neu) | ✅ erledigt |
 | 3 | Design-System & Gerüst (Token-CSS, index.html-Skelett, Skeletons, responsive) + Design-Review ≥8 | ⬜ offen |
 | 4a | UI-Verkabelung: Hero, KPIs, Charts, Meilensteine | ⬜ offen |
 | 4b | UI-Verkabelung: Video-Battle, Heatmap, Spruch, Historie | ⬜ offen |
@@ -57,6 +57,20 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
 - Echter dry-run 13.07.: Mika 173 Follower / 38 Videos / viewsTotal 338'669;
   Tino 27 Follower / 12 Videos / viewsTotal 11'795. history.json unverändert (git diff leer).
 - Workflow auf checkout@v5/setup-node@v5, committet data/ + assets/avatars/ (mit Existenz-Guard).
+
+## Phase-2-Befunde (Gate bestanden 13.07.2026)
+
+- logic.js: daysBetween, score (Breakdown, negative Zuwächse zählen negativ), dayWinner
+  (isGap bei spanDays>1), dailyRows/dayGains/yesterdayGains mit spanDays, streak (Lücken
+  übersprungen, Gleichstand beendet), winLoss7d (nur 1-Tages-Übergänge), velocity7d,
+  milestoneProjection (Velocity ≤0 → nie), engagementRate, heatmapData (flaches Array,
+  Montag-Start), topVideoOfWeek, headToHead (createTime, nicht isTop), viewsGain (fehlendes
+  viewsTotal nie 0), spruchDesTages (djb2-Hash, Pool 32+4 exportiert als spruchPool).
+- config.js: `scoring: { followers: 3, likes: 1, videos: 2 }` (Farben unangetastet → Phase 3).
+- Tests: 89/89 grün (74 logic + 15 fetch). Gate selbst geprüft: 18-Tage-Lücke, 0/1/2 Snapshots,
+  viewsTotal-Mischfälle, Gleichstand, Platzhalter-Vollständigkeit alle abgedeckt.
+- Plausibilität gegen echte Daten: Sieger 11.→12.07. Mika 50:1, Streak a×3, W:L 3:0.
+- Risiko notiert: heatmapData nutzt UTC-Tag (Posts spät abends CH rutschen auf Folgetag).
 
 ## Notizen für Folge-Sessions
 

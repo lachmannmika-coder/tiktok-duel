@@ -18,6 +18,10 @@
       green: "#3ddc84"
     },
 
+    // Zentrale Score-Formel des Duells: Punkte = Follower-Zuwachs*3 + Likes-Zuwachs*1 + neue Videos*2.
+    // logic.js bekommt diese Gewichte immer als Parameter gereicht (kein Hardcoding dort).
+    scoring: { followers: 3, likes: 1, videos: 2 },
+
     // Daten-Update laeuft taeglich (siehe .github/workflows/daily.yml).
     updateUtcHour: 6
   };
