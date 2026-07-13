@@ -1,0 +1,119 @@
+{
+  "code": 0,
+  "msg": "success",
+  "processed_time": 0.8543,
+  "data": {
+    "videos": [
+      {
+        "video_id": "7526000000000000001",
+        "region": "CH",
+        "title": "Sonnenaufgang am See - einfach magisch",
+        "cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/cover-0001?x-expires=1752537600&x-signature=beispiel",
+        "ai_dynamic_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/dyn-0001?x-expires=1752537600&x-signature=beispiel",
+        "origin_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/orig-0001?x-expires=1752537600&x-signature=beispiel",
+        "duration": 15,
+        "play": "https://www.tikwm.com/video/media/play/7526000000000000001.mp4",
+        "wmplay": "https://www.tikwm.com/video/media/wmplay/7526000000000000001.mp4",
+        "size": 1834722,
+        "wm_size": 2011458,
+        "music": "https://www.tikwm.com/video/music/7526000000000000001.mp3",
+        "music_info": {
+          "id": "7100000000000000001",
+          "title": "Originalton",
+          "author": "Mika",
+          "original": true
+        },
+        "play_count": 12000,
+        "digg_count": 800,
+        "comment_count": 40,
+        "share_count": 12,
+        "download_count": 5,
+        "collect_count": 30,
+        "create_time": 1752220800,
+        "anchors": null,
+        "anchors_extras": "",
+        "is_top": 1,
+        "author": {
+          "id": "6873222184282391557",
+          "unique_id": "mika.nature.enjoyer",
+          "nickname": "Mika",
+          "avatar": "https://p16-common-sign-va.tiktokcdn-us.com/tos-maliva-avt-0068/beispiel-a.jpeg"
+        }
+      },
+      {
+        "video_id": "7525000000000000002",
+        "region": "CH",
+        "title": "Nebel im Tal #nature",
+        "cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/cover-0002?x-expires=1752537600&x-signature=beispiel",
+        "ai_dynamic_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/dyn-0002?x-expires=1752537600&x-signature=beispiel",
+        "origin_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/orig-0002?x-expires=1752537600&x-signature=beispiel",
+        "duration": 22,
+        "play": "https://www.tikwm.com/video/media/play/7525000000000000002.mp4",
+        "wmplay": "https://www.tikwm.com/video/media/wmplay/7525000000000000002.mp4",
+        "size": 2544210,
+        "wm_size": 2799314,
+        "music": "https://www.tikwm.com/video/music/7525000000000000002.mp3",
+        "music_info": {
+          "id": "7100000000000000002",
+          "title": "Calm Vibes",
+          "author": "Beispiel-Artist",
+          "original": false
+        },
+        "play_count": 3400,
+        "digg_count": 210,
+        "comment_count": 9,
+        "share_count": 3,
+        "download_count": 1,
+        "collect_count": 11,
+        "create_time": 1751875200,
+        "anchors": null,
+        "anchors_extras": "",
+        "is_top": 0,
+        "author": {
+          "id": "6873222184282391557",
+          "unique_id": "mika.nature.enjoyer",
+          "nickname": "Mika",
+          "avatar": "https://p16-common-sign-va.tiktokcdn-us.com/tos-maliva-avt-0068/beispiel-a.jpeg"
+        }
+      },
+      {
+        "video_id": "7524000000000000003",
+        "region": "CH",
+        "title": "",
+        "cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/cover-0003?x-expires=1752537600&x-signature=beispiel",
+        "ai_dynamic_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/dyn-0003?x-expires=1752537600&x-signature=beispiel",
+        "origin_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/orig-0003?x-expires=1752537600&x-signature=beispiel",
+        "duration": 8,
+        "play": "https://www.tikwm.com/video/media/play/7524000000000000003.mp4",
+        "wmplay": "https://www.tikwm.com/video/media/wmplay/7524000000000000003.mp4",
+        "size": 901224,
+        "wm_size": 1002310,
+        "music": "https://www.tikwm.com/video/music/7524000000000000003.mp3",
+        "music_info": {
+          "id": "7100000000000000003",
+          "title": "Originalton",
+          "author": "Mika",
+          "original": true
+        },
+        "play_count": 560,
+        "digg_count": 45,
+        "comment_count": 2,
+        "share_count": 0,
+        "download_count": 0,
+        "collect_count": 1,
+        "create_time": 1751702400,
+        "anchors": null,
+        "anchors_extras": "",
+        "is_top": 0,
+        "author": {
+          "id": "6873222184282391557",
+          "unique_id": "mika.nature.enjoyer",
+          "nickname": "Mika",
+          "avatar": "https://p16-common-sign-va.tiktokcdn-us.com/tos-maliva-avt-0068/beispiel-a.jpeg"
+        }
+      }
+    ],
+    "cursor": "1751702400000",
+    "hasMore": true
+  }
+}

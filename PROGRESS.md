@@ -10,7 +10,7 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 | Phase | Inhalt | Status |
 |---|---|---|
 | 0 | Setup, Tests grün, Skill-Inventur, package.json bereinigt | ✅ erledigt |
-| 1 | Daten-Pipeline v2 (P0-8: posts, videos.json, viewsTotal, Avatare, --dry-run, Fixtures) | ⬜ offen |
+| 1 | Daten-Pipeline v2 (P0-8: posts, videos.json, viewsTotal, Avatare, --dry-run, Fixtures) | ✅ erledigt |
 | 2 | Logik TDD (score, dayWinner datums-bewusst, streak, winLoss7d, velocity, milestone, heatmap, topVideo, headToHead, spruch, dailyRows/dayGains neu) | ⬜ offen |
 | 3 | Design-System & Gerüst (Token-CSS, index.html-Skelett, Skeletons, responsive) + Design-Review ≥8 | ⬜ offen |
 | 4a | UI-Verkabelung: Hero, KPIs, Charts, Meilensteine | ⬜ offen |
@@ -46,6 +46,17 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 | MASTERUI / ui-ux-pro-max | optional Phase 3, nur falls design-Skills nicht reichen |
 
 Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
+
+## Phase-1-Befunde (Gate bestanden 13.07.2026)
+
+- `scripts/fetch.mjs` v2: user/info + user/posts (paginiert, Cap 200, Pausen 1500ms),
+  schreibt `data/videos.json` + `viewsTotal` im Snapshot (bei posts-Fehlschlag weggelassen,
+  nie 0) + Avatare nach `assets/avatars/a.jpg|b.jpg`. `--dry-run` schreibt garantiert nichts.
+  Pure Helfer exportiert (mapVideo, sumViews, fetchAllVideos mit injizierbarem fetch/sleep).
+- `test/fetch.test.js` (15 Tests) + 7 tikwm-Fixtures in `test/fixtures/`. `npm test` → 40/40 grün.
+- Echter dry-run 13.07.: Mika 173 Follower / 38 Videos / viewsTotal 338'669;
+  Tino 27 Follower / 12 Videos / viewsTotal 11'795. history.json unverändert (git diff leer).
+- Workflow auf checkout@v5/setup-node@v5, committet data/ + assets/avatars/ (mit Existenz-Guard).
 
 ## Notizen für Folge-Sessions
 

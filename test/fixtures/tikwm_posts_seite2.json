@@ -1,0 +1,83 @@
+{
+  "code": 0,
+  "msg": "success",
+  "processed_time": 0.7912,
+  "data": {
+    "videos": [
+      {
+        "video_id": "7523000000000000004",
+        "region": "CH",
+        "title": "Regentag im Wald",
+        "cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/cover-0004?x-expires=1752537600&x-signature=beispiel",
+        "ai_dynamic_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/dyn-0004?x-expires=1752537600&x-signature=beispiel",
+        "origin_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/orig-0004?x-expires=1752537600&x-signature=beispiel",
+        "duration": 31,
+        "play": "https://www.tikwm.com/video/media/play/7523000000000000004.mp4",
+        "wmplay": "https://www.tikwm.com/video/media/wmplay/7523000000000000004.mp4",
+        "size": 3310027,
+        "wm_size": 3541998,
+        "music": "https://www.tikwm.com/video/music/7523000000000000004.mp3",
+        "music_info": {
+          "id": "7100000000000000004",
+          "title": "Rainy Mood",
+          "author": "Beispiel-Artist",
+          "original": false
+        },
+        "play_count": 900,
+        "digg_count": 77,
+        "comment_count": 5,
+        "share_count": 1,
+        "download_count": 0,
+        "collect_count": 4,
+        "create_time": 1751097600,
+        "anchors": null,
+        "anchors_extras": "",
+        "is_top": 0,
+        "author": {
+          "id": "6873222184282391557",
+          "unique_id": "mika.nature.enjoyer",
+          "nickname": "Mika",
+          "avatar": "https://p16-common-sign-va.tiktokcdn-us.com/tos-maliva-avt-0068/beispiel-a.jpeg"
+        }
+      },
+      {
+        "video_id": "7522000000000000005",
+        "region": "CH",
+        "title": "Erster Schnee auf dem Gipfel",
+        "cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/cover-0005?x-expires=1752537600&x-signature=beispiel",
+        "ai_dynamic_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/dyn-0005?x-expires=1752537600&x-signature=beispiel",
+        "origin_cover": "https://p16-sign.tiktokcdn-us.com/obj/tos-useast5-p-0068-tx/orig-0005?x-expires=1752537600&x-signature=beispiel",
+        "duration": 12,
+        "play": "https://www.tikwm.com/video/media/play/7522000000000000005.mp4",
+        "wmplay": "https://www.tikwm.com/video/media/wmplay/7522000000000000005.mp4",
+        "size": 1287340,
+        "wm_size": 1399102,
+        "music": "https://www.tikwm.com/video/music/7522000000000000005.mp3",
+        "music_info": {
+          "id": "7100000000000000005",
+          "title": "Originalton",
+          "author": "Mika",
+          "original": true
+        },
+        "play_count": 210,
+        "digg_count": 19,
+        "comment_count": 1,
+        "share_count": 0,
+        "download_count": 0,
+        "collect_count": 0,
+        "create_time": 1750492800,
+        "anchors": null,
+        "anchors_extras": "",
+        "is_top": 0,
+        "author": {
+          "id": "6873222184282391557",
+          "unique_id": "mika.nature.enjoyer",
+          "nickname": "Mika",
+          "avatar": "https://p16-common-sign-va.tiktokcdn-us.com/tos-maliva-avt-0068/beispiel-a.jpeg"
+        }
+      }
+    ],
+    "cursor": "1750492800000",
+    "hasMore": false
+  }
+}

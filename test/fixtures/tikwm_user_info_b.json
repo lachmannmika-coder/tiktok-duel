@@ -1,0 +1,27 @@
+{
+  "code": 0,
+  "msg": "success",
+  "processed_time": 0.2874,
+  "data": {
+    "user": {
+      "id": "7011933847583212345",
+      "uniqueId": "tego..11",
+      "nickname": "Tino",
+      "avatarThumb": "https://p16-common-sign-va.tiktokcdn-us.com/tos-maliva-avt-0068/beispiel-b~tplv-tiktokx-cropcenter:100:100.jpeg?x-expires=1752537600&x-signature=beispielsignatur2",
+      "signature": "",
+      "verified": false,
+      "secUid": "MS4wLjABAAAA_BeispielSecUidCreatorB",
+      "secret": false,
+      "privateAccount": false,
+      "region": "CH"
+    },
+    "stats": {
+      "followerCount": 26,
+      "followingCount": 33,
+      "heart": 1030,
+      "heartCount": 1030,
+      "videoCount": 12,
+      "diggCount": 4
+    }
+  }
+}

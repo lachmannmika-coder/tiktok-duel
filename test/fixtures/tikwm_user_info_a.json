@@ -1,0 +1,27 @@
+{
+  "code": 0,
+  "msg": "success",
+  "processed_time": 0.3121,
+  "data": {
+    "user": {
+      "id": "6873222184282391557",
+      "uniqueId": "mika.nature.enjoyer",
+      "nickname": "Mika",
+      "avatarThumb": "https://p16-common-sign-va.tiktokcdn-us.com/tos-maliva-avt-0068/beispiel-a~tplv-tiktokx-cropcenter:100:100.jpeg?x-expires=1752537600&x-signature=beispielsignatur",
+      "signature": "Natur, See und Berge",
+      "verified": false,
+      "secUid": "MS4wLjABAAAA_BeispielSecUidCreatorA",
+      "secret": false,
+      "privateAccount": false,
+      "region": "CH"
+    },
+    "stats": {
+      "followerCount": 173,
+      "followingCount": 460,
+      "heart": 55870,
+      "heartCount": 55870,
+      "videoCount": 38,
+      "diggCount": 0
+    }
+  }
+}

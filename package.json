@@ -4,7 +4,7 @@
   "private": true,
   "description": "DUELL - Dashboard fuer das taegliche TikTok-Duell zwischen zwei Creatorn (Mika vs. Tino)",
   "scripts": {
-    "test": "node --test test/logic.test.js",
+    "test": "node --test test/logic.test.js test/fetch.test.js",
     "serve": "node scripts/serve.mjs"
   }
 }

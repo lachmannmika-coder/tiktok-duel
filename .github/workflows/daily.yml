@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: "20"
 
@@ -31,7 +31,8 @@ jobs:
         run: |
           git config user.name "duell-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/history.json
+          git add data/
+          if [ -d assets/avatars ]; then git add assets/avatars/; fi
           if git diff --staged --quiet; then
             echo "Keine Aenderung."
           else
