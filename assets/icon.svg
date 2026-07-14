@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- DUELL-Icon: Gold (Mika) vs. Platin (Tino) auf der dunklen Buehne -->
+  <rect width="128" height="128" rx="28" fill="#07070a"/>
+  <rect x="1.5" y="1.5" width="125" height="125" rx="26.5" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="3"/>
+  <circle cx="47" cy="52" r="26" fill="none" stroke="#d4af6e" stroke-width="7"/>
+  <circle cx="81" cy="76" r="26" fill="none" stroke="#aeb6c2" stroke-width="7"/>
+  <circle cx="47" cy="52" r="26" fill="none" stroke="#d4af6e" stroke-width="7" stroke-dasharray="40 200" stroke-dashoffset="-20"/>
+</svg>

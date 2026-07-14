@@ -15,7 +15,7 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 | 3 | Design-System & Gerüst (Token-CSS, index.html-Skelett, Skeletons, responsive) + Design-Review ≥8 | ✅ erledigt |
 | 4a | UI-Verkabelung: Hero, KPIs, Charts, Meilensteine | ✅ erledigt (Gesamt-Gate Phase 4 folgt nach 4b) |
 | 4b | UI-Verkabelung: Video-Battle, Block-Diagramm, Spruch, Historie | ✅ erledigt (Gate Phase 4 bestanden 14.07.2026) |
-| 5 | Motion & Polish, PWA/Meta | ⬜ offen |
+| 5 | Motion & Polish, PWA/Meta | ✅ erledigt (Gate bestanden 14.07.2026) |
 | 6 | QA & Abschluss-Review (≥8/10, Fix-Loops max. 3) | ⬜ offen |
 | Abschluss | PROGRESS final, lokale Commits, KEIN Push, Nachricht an Mika | ⬜ offen |
 
@@ -138,6 +138,19 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
 - Cover-onerror-Fallback aufs Monogramm nachgewiesen (Fixture-Cover-URLs 404 → img entfernt).
 - npm test 89/89, node --check OK. `?videos=`-Override ergänzt (analog `?data=`).
 - Offen für Phase 5: Motion (Scroll-Reveals, nur transform/opacity), PWA-Manifest/Meta.
+
+## Phase-5-Befunde (Gate bestanden 14.07.2026)
+
+- Scroll-Reveals: `.reveal`/`.reveal--in` in styles.css (nur opacity/transform),
+  `initReveals()` in dashboard.js via IntersectionObserver — Klasse wird NUR ohne
+  prefers-reduced-motion vergeben (ohne JS bleibt alles sichtbar, kein FOUC-Risiko).
+- PWA/Meta: `manifest.webmanifest` (de-CH, standalone, #07070a, SVG-Icon any+maskable),
+  `assets/icon.svg` (Gold-/Platin-Ringe auf dunkler Bühne), Favicon-/apple-touch-Links,
+  meta description. Kein Service-Worker (bewusst — file:// und Pages-Unterpfad bleiben simpel).
+- serve.mjs: MIME für .webmanifest/.jpg ergänzt (nur lokaler Test-Server).
+- Beweis (Headless-CDP, normal + --force-prefers-reduced-motion): 9/9 Sektionen
+  revealed nach Scroll, reduced-motion → 0 reveals & alles opacity 1; Konsole ohne
+  JS-Fehler (nur erwartete 404s lokal fehlender avatars/videos.json); npm test 89/89.
 
 ## Notizen für Folge-Sessions
 

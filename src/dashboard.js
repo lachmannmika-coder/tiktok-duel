@@ -868,9 +868,28 @@
     renderHistory(db, snaps);                      // Sektion 9  (#history-body)
   }
 
+  // Scroll-Reveals (Phase 5): Sektionen gleiten dezent ein (nur opacity/transform).
+  // Bei reduced motion oder fehlendem IntersectionObserver passiert schlicht nichts.
+  function initReveals() {
+    if (reducedMotion() || typeof IntersectionObserver === "undefined") return;
+    var els = document.querySelectorAll(".page > section, .page > footer");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("reveal--in");
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
+    els.forEach(function (el) {
+      el.classList.add("reveal");
+      io.observe(el);
+    });
+  }
+
   function init() {
     initChartControls();
     startCountdown();
+    initReveals();
     Promise.all([loadData(), loadVideos()]).then(function (res) {
       state.videos = res[1];
       render(res[0]);

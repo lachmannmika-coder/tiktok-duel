@@ -1131,6 +1131,18 @@ ul { list-style: none; }
   to { transform: translateX(100%); }
 }
 
+/* ---------- 14b · Scroll-Reveals (Phase 5) ----------
+   JS vergibt .reveal nur ohne prefers-reduced-motion; ohne JS bleibt alles sichtbar. */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.reveal--in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+}
+
 /* ---------- 15 · Reduced Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

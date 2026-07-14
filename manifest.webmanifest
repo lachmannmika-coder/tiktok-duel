@@ -1,0 +1,15 @@
+{
+  "name": "DUELL — Mika vs. Tino",
+  "short_name": "DUELL",
+  "description": "TikTok-Follower-Duell: Mika gegen Tino, täglich neu gewertet.",
+  "lang": "de-CH",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#07070a",
+  "theme_color": "#07070a",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
