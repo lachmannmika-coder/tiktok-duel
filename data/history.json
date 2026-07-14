@@ -106,13 +106,15 @@
         "followers": 174,
         "following": 463,
         "likes": 55917,
-        "videos": 38
+        "videos": 38,
+        "viewsTotal": 339176
       },
       "b": {
         "followers": 27,
         "following": 33,
         "likes": 1030,
-        "videos": 12
+        "videos": 12,
+        "viewsTotal": 11802
       }
     }
   ]
