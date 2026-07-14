@@ -13,8 +13,8 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 | 1 | Daten-Pipeline v2 (P0-8: posts, videos.json, viewsTotal, Avatare, --dry-run, Fixtures) | ✅ erledigt |
 | 2 | Logik TDD (score, dayWinner datums-bewusst, streak, winLoss7d, velocity, milestone, heatmap, topVideo, headToHead, spruch, dailyRows/dayGains neu) | ✅ erledigt |
 | 3 | Design-System & Gerüst (Token-CSS, index.html-Skelett, Skeletons, responsive) + Design-Review ≥8 | ✅ erledigt |
-| 4a | UI-Verkabelung: Hero, KPIs, Charts, Meilensteine | ⬜ offen |
-| 4b | UI-Verkabelung: Video-Battle, Heatmap, Spruch, Historie | ⬜ offen |
+| 4a | UI-Verkabelung: Hero, KPIs, Charts, Meilensteine | ✅ erledigt (Gesamt-Gate Phase 4 folgt nach 4b) |
+| 4b | UI-Verkabelung: Video-Battle, Block-Diagramm, Spruch, Historie | ⬜ offen — Agent starb am Session-Limit VOR dem ersten Edit |
 | 5 | Motion & Polish, PWA/Meta | ⬜ offen |
 | 6 | QA & Abschluss-Review (≥8/10, Fix-Loops max. 3) | ⬜ offen |
 | Abschluss | PROGRESS final, lokale Commits, KEIN Push, Nachricht an Mika | ⬜ offen |
@@ -93,6 +93,29 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
 - Screenshot-Tooling: Browser-Pane-Screenshot timeoutet weiterhin; shot.mjs-Muster verbessert
   (Zufallsport + eigenes user-data-dir + taskkill /T /F, fullpage bei grossen Höhen vermeiden —
   feTurbulence-Noise macht Riesen-Viewports zäh, stattdessen scroll=<y>-Abschnitte).
+
+## Phase-4a-Befunde (14.07.2026, Agent-Beweise geprüft)
+
+- Entscheidung: 4a/4b SEQUENZIELL statt parallel — beide schreiben in dieselbe Datei
+  (`src/dashboard.js`), parallel würden sie sich klobbern (dispatching-parallel-agents-Regel:
+  nur ohne Shared State parallelisieren).
+- dashboard.js neu (~530 Zeilen): IIFE, loadData mit fetch + `?data=`-Override + SEED-Fallback
+  (bildet echte Datenlage inkl. Lücke nach; viewsTotal nur bei a — realer Fehl-Fall).
+- Verkabelt: Hero (win-a/b, tie, gap inkl. <2-Snapshots-Fall; Chips Streak/W:L/Countdown tickend),
+  KPIs (Count-up, Lücken-Delta „+42 über 18 Tage", viewsGain null → „Tracking läuft ab heute"),
+  Chart (kumulativ = Linien + Gradient-Fill, Lücken-Segmente gestrichelt/gedimmt mit
+  Tooltip-Hinweis; daily = Balken, Lücken-Übergänge als Ø/Tag normiert; skeleton wird nach
+  Render entfernt; fehlendes CDN-Chart abgefangen), Meilensteine (ETA bzw. „nie 💀").
+- Genutzt: dayWinner/streak/winLoss7d (je mit CFG.scoring), nextUpdate, dayGains, viewsGain,
+  milestoneProjection, followerSeries, filterByRange, delta, daysBetween.
+- Bewusste Abweichung: „+3 heute" aus `dayGains` (jüngster Übergang) statt `yesterdayGains`
+  (liefert den VORLETZTEN Übergang, braucht ≥3 Snapshots) — semantisch korrekt für „heute".
+- Beweise: node --check OK, npm test 89/89, http:// UND file:// headless-DOM-geprüft
+  (hero--win-a 50:1, Streak ×3, aria 173/200 u. 26/50), Edge-Cases 0/1 Snapshot, Lücke,
+  Unentschieden fehlerfrei. Konsole sauber.
+- Andockpunkt für 4b: zentrale `render(db)` mit markiertem Block `// ---- Phase 4b dockt hier an:`
+  (renderSpruch, renderVideoBattle, renderOutputChart, renderHistory); Helfer `$`, `fmt`, `fmt1`,
+  `signed`, `deDateFull/Short`, `deltaClass`, `setText`, `SEP`, `loadJSON`, `reducedMotion`, `state`.
 
 ## Notizen für Folge-Sessions
 
