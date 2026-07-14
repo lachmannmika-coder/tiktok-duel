@@ -242,11 +242,16 @@ async function main() {
   const db = JSON.parse(await readFile(HISTORY_DATA, "utf8"));
   const date = today();
 
+  // Existiert der heutige Schnappschuss schon (z. B. manueller Lauf nach dem
+  // 06:00-Lauf), bleibt der History-Eintrag unangetastet - aber videos.json,
+  // viewsTotal und Avatare werden trotzdem aktualisiert.
+  const snapshotExists = db.snapshots.some((s) => s.date === date);
   if (dryRun) {
     console.log("DRY-RUN: Echte API-Abfragen, aber es wird garantiert NICHTS geschrieben.");
-  } else if (db.snapshots.some((s) => s.date === date)) {
-    console.log(`Schnappschuss fuer heute (${date}) existiert schon - nichts zu tun.`);
-    return;
+  } else if (snapshotExists) {
+    console.log(
+      `Schnappschuss fuer heute (${date}) existiert schon - aktualisiere nur videos.json, viewsTotal und Avatare.`
+    );
   }
 
   // Letzte bekannte Videoliste als fail-soft-Ersatz laden (falls vorhanden).
@@ -330,60 +335,77 @@ async function main() {
     process.exit(1);
   }
 
-  // Profil fail-soft: bei Fehler den letzten Snapshot-Wert uebernehmen und
-  // als "stale" markieren. viewsTotal wird nur bei ERFOLGREICHEM posts-Abruf
-  // frisch gesetzt - bei Fehlschlag wird das Feld bewusst weggelassen
-  // (niemals 0 schreiben).
-  const stale = [];
-  const snapshotValues = {};
+  if (!snapshotExists) {
+    // Profil fail-soft: bei Fehler den letzten Snapshot-Wert uebernehmen und
+    // als "stale" markieren. viewsTotal wird nur bei ERFOLGREICHEM posts-Abruf
+    // frisch gesetzt - bei Fehlschlag wird das Feld bewusst weggelassen
+    // (niemals 0 schreiben).
+    const stale = [];
+    const snapshotValues = {};
 
-  for (const key of sides) {
-    const handle = db.creators[key].handle;
-    if (profileErrors[key]) {
-      const fallback = lastSnapshotValue(db, key);
-      if (!fallback) {
-        console.error(
-          `Abbruch: Creator ${key.toUpperCase()} ("${handle}") konnte nicht abgerufen werden und es gibt keinen frueheren Schnappschuss als Ersatz.`
+    for (const key of sides) {
+      const handle = db.creators[key].handle;
+      if (profileErrors[key]) {
+        const fallback = lastSnapshotValue(db, key);
+        if (!fallback) {
+          console.error(
+            `Abbruch: Creator ${key.toUpperCase()} ("${handle}") konnte nicht abgerufen werden und es gibt keinen frueheren Schnappschuss als Ersatz.`
+          );
+          process.exit(1);
+        }
+        console.warn(
+          `WARNUNG: Verwende fuer Creator ${key.toUpperCase()} ("${handle}") die Werte des letzten Schnappschusses, da der aktuelle Abruf fehlgeschlagen ist (${profileErrors[key].message}).`
         );
-        process.exit(1);
-      }
-      console.warn(
-        `WARNUNG: Verwende fuer Creator ${key.toUpperCase()} ("${handle}") die Werte des letzten Schnappschusses, da der aktuelle Abruf fehlgeschlagen ist (${profileErrors[key].message}).`
-      );
-      snapshotValues[key] = { ...fallback };
-      stale.push(key);
-    } else {
-      const p = profiles[key];
-      snapshotValues[key] = {
-        followers: p.followers,
-        following: p.following,
-        likes: p.likes,
-        videos: p.videos
-      };
-      if (videoLists[key]) {
-        snapshotValues[key].viewsTotal = sumViews(videoLists[key]);
+        snapshotValues[key] = { ...fallback };
+        stale.push(key);
+      } else {
+        const p = profiles[key];
+        snapshotValues[key] = {
+          followers: p.followers,
+          following: p.following,
+          likes: p.likes,
+          videos: p.videos
+        };
+        if (videoLists[key]) {
+          snapshotValues[key].viewsTotal = sumViews(videoLists[key]);
+        }
       }
     }
-  }
 
-  const snapshot = { date, a: snapshotValues.a, b: snapshotValues.b };
-  if (stale.length > 0) {
-    snapshot.stale = stale;
-  }
+    const snapshot = { date, a: snapshotValues.a, b: snapshotValues.b };
+    if (stale.length > 0) {
+      snapshot.stale = stale;
+    }
 
-  db.snapshots.push(snapshot);
-  db.snapshots.sort((x, y) => x.date.localeCompare(y.date));
+    db.snapshots.push(snapshot);
+    db.snapshots.sort((x, y) => x.date.localeCompare(y.date));
 
-  await writeFile(HISTORY_DATA, JSON.stringify(db, null, 2) + "\n");
+    await writeFile(HISTORY_DATA, JSON.stringify(db, null, 2) + "\n");
 
-  if (stale.length > 0) {
-    console.log(
-      `Schnappschuss ${date} gespeichert (mit veralteten Werten fuer: ${stale.join(", ")}): A ${snapshotValues.a.followers} Follower, B ${snapshotValues.b.followers} Follower.`
-    );
+    if (stale.length > 0) {
+      console.log(
+        `Schnappschuss ${date} gespeichert (mit veralteten Werten fuer: ${stale.join(", ")}): A ${snapshotValues.a.followers} Follower, B ${snapshotValues.b.followers} Follower.`
+      );
+    } else {
+      console.log(
+        `Schnappschuss ${date} gespeichert: A ${snapshotValues.a.followers} Follower, B ${snapshotValues.b.followers} Follower.`
+      );
+    }
   } else {
-    console.log(
-      `Schnappschuss ${date} gespeichert: A ${snapshotValues.a.followers} Follower, B ${snapshotValues.b.followers} Follower.`
-    );
+    // viewsTotal im bestehenden heutigen Schnappschuss nachziehen - nur bei
+    // erfolgreichem posts-Abruf (niemals 0 schreiben, Feld sonst unangetastet).
+    const todaySnap = db.snapshots.find((s) => s.date === date);
+    let viewsUpdated = false;
+    for (const key of sides) {
+      if (videoLists[key]) {
+        todaySnap[key].viewsTotal = sumViews(videoLists[key]);
+        viewsUpdated = true;
+      }
+    }
+    if (viewsUpdated) {
+      await writeFile(HISTORY_DATA, JSON.stringify(db, null, 2) + "\n");
+      console.log(`viewsTotal im bestehenden Schnappschuss ${date} aktualisiert.`);
+    }
   }
 
   // videos.json schreiben - fail-soft: bei Fehlschlag die letzte bekannte
