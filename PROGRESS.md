@@ -16,7 +16,7 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 | 4a | UI-Verkabelung: Hero, KPIs, Charts, Meilensteine | ✅ erledigt (Gesamt-Gate Phase 4 folgt nach 4b) |
 | 4b | UI-Verkabelung: Video-Battle, Block-Diagramm, Spruch, Historie | ✅ erledigt (Gate Phase 4 bestanden 14.07.2026) |
 | 5 | Motion & Polish, PWA/Meta | ✅ erledigt (Gate bestanden 14.07.2026) |
-| 6 | QA & Abschluss-Review (≥8/10, Fix-Loops max. 3) | ⬜ offen |
+| 6 | QA & Abschluss-Review (≥8/10, Fix-Loops max. 3) | ✅ erledigt (8,5/10, A11y AA, 14.07.2026) |
 | Abschluss | PROGRESS final, lokale Commits, KEIN Push, Nachricht an Mika | ⬜ offen |
 
 ## Phase-0-Befunde
@@ -151,6 +151,21 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
 - Beweis (Headless-CDP, normal + --force-prefers-reduced-motion): 9/9 Sektionen
   revealed nach Scroll, reduced-motion → 0 reveals & alles opacity 1; Konsole ohne
   JS-Fehler (nur erwartete 404s lokal fehlender avatars/videos.json); npm test 89/89.
+
+## Phase-6-Befunde (Gate bestanden 14.07.2026)
+
+- Design-Critique (Screenshots 1440/390 via Headless-CDP, alle Sektionen mit Video-Fixture):
+  8,5/10. Schwächen (akzeptiert): Tages-Output bei dünner Datenlage vertikal leer (füllt
+  sich mit echten Daten); .blk-Hover-Titel nur per Maus (Info redundant in Video-Reihen).
+  Stärken: Hierarchie Hero→KPIs→Rennen, durchgängiges Gold/Platin-System, Mobile sauber.
+- A11y (WCAG 2.1 AA): --t-dim #67655f → #8a8780 (3,45:1 → ≥4,82:1 auf allen Surfaces,
+  Chart-Ticks übernehmen es via cssVar automatisch). Restliche Farben: t-mid 6,9:1,
+  gold 8,4:1, platin 8,5:1, delta-pos 7,9:1, delta-neg 6,8:1 (jeweils vs. surface-3).
+  focus-visible global, aria-pressed/aria-valuenow/scope/aria-hidden vorhanden,
+  reduced-motion-Kill greift. Pills ~27px: WCAG-2.2-AA-konform (24px), 44px wäre AAA.
+- Code-Review gegen PROGRESS-Regeln: logic.js/data/history.json/package.json seit
+  Phase 2 unberührt (git log bestätigt), keine neuen Dependencies, nur transform/opacity
+  animiert, file:// funktioniert (SEED), Kein-Star-Wars-Regel eingehalten.
 
 ## Notizen für Folge-Sessions
 

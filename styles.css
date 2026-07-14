@@ -21,7 +21,7 @@
   /* Text-Hierarchie (warmes Weiss) */
   --t-hi:            #f0ede6;
   --t-mid:           #a6a39c;
-  --t-dim:           #67655f;
+  --t-dim:           #8a8780; /* WCAG AA: >=4.8:1 auf allen Surfaces (vorher #67655f ~3.5:1) */
 
   /* Creator-Identität */
   --c-gold:          #d4af6e;
