@@ -17,7 +17,7 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 | 4b | UI-Verkabelung: Video-Battle, Block-Diagramm, Spruch, Historie | ✅ erledigt (Gate Phase 4 bestanden 14.07.2026) |
 | 5 | Motion & Polish, PWA/Meta | ✅ erledigt (Gate bestanden 14.07.2026) |
 | 6 | QA & Abschluss-Review (≥8/10, Fix-Loops max. 3) | ✅ erledigt (8,5/10, A11y AA, 14.07.2026) |
-| Abschluss | PROGRESS final, lokale Commits, KEIN Push, Nachricht an Mika | ⬜ offen |
+| Abschluss | PROGRESS final, lokale Commits, KEIN Push, Nachricht an Mika | ✅ erledigt 14.07.2026 (7 lokale Commits, Push wartet auf Mikas OK) |
 
 ## Phase-0-Befunde
 
@@ -172,3 +172,6 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
 - `data/history.json` NIE von Hand editieren (gehört der Action). `fetch.mjs` lokal nur mit `--dry-run`.
 - Handles: a = mika.nature.enjoyer (Mika, Gold), b = tego..11 (Tino, Platin).
 - Am Ende NICHT pushen — Mika fragen.
+- `skill_tiktok-duell-sync/` in .gitignore aufgenommen (lokales Tooling, wie graphify-out/).
+- `data/videos.json` + Avatare entstehen mit dem ersten scharfen Action-Lauf nach dem Push;
+  bis dahin zeigen Video-Battle/Tages-Output den ehrlichen Leerzustand.
