@@ -173,5 +173,10 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
 - Handles: a = mika.nature.enjoyer (Mika, Gold), b = tego..11 (Tino, Platin).
 - Am Ende NICHT pushen — Mika fragen.
 - `skill_tiktok-duell-sync/` in .gitignore aufgenommen (lokales Tooling, wie graphify-out/).
-- `data/videos.json` + Avatare entstehen mit dem ersten scharfen Action-Lauf nach dem Push;
-  bis dahin zeigen Video-Battle/Tages-Output den ehrlichen Leerzustand.
+- Live seit 14.07.2026 abends: Push + Action-Lauf erfolgt. ABER: tikwm hat `/api/user/posts`
+  hinter eine Cloudflare-JS-Challenge gelegt (HTTP 403 „Just a moment", betrifft Runner UND
+  lokales Node; `user/info` geht weiter). videos.json vom 14.07. wurde deshalb einmalig per
+  Browser-Fetch importiert (gleiche mapVideo-Form, viewsTotal per sumViews nachgetragen).
+  Fail-soft greift: künftige Action-Läufe behalten die letzte bekannte Videoliste, wenn
+  posts weiter blockt — Follower/Likes/History aktualisieren sich normal weiter.
+  Falls die Blockade bleibt: Alternative Videoquelle oder Challenge-fähiger Fetch nötig.
