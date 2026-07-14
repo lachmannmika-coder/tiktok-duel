@@ -8,12 +8,12 @@
   "use strict";
 
   return {
-    // Farben je Creator (Identitaet bleibt erhalten): Mika = Rot/Rose, Tino = Blau.
+    // Farben je Creator (Identitaet bleibt erhalten): Mika = Champagner-Gold, Tino = Platin/Stahl.
     colors: {
-      a: "#fb5169",
-      aDeep: "#7a1728",
-      b: "#4d9fff",
-      bDeep: "#0e3a63",
+      a: "#d4af6e",
+      aDeep: "#8a6d3a",
+      b: "#aeb6c2",
+      bDeep: "#5c6672",
       muted: "#8a90a4",
       green: "#3ddc84"
     },

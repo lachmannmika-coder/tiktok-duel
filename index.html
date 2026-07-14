@@ -3,229 +3,711 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#101013">
-<title>Duell — Mika vs. Tino TikTok-Dashboard</title>
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#07070a">
+<title>DUELL — Mika vs. Tino</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
+<!--
+  ============================================================
+  ID-/DATA-SCHEMA (Andockpunkte fuer Phase 4)
+  ============================================================
+  Creator-Suffix:  -a = Mika (Gold) · -b = Tino (Platin)
+  Einzelwerte:     id="{bereich}-{feld}[-{a|b}]"
+                   z. B. #kpi-followers-a, #hero-score, #milestone-eta-b
+  Listen/Slots:    Container-ID + [data-slot="0..n"] pro Karte,
+                   Felder darin via [data-field="cover|title|age|views|likes|comments|er"]
+                   z. B. #video-row-a [data-slot="2"] [data-field="views"]
+  Battle-Balken:   #battle-bars .duel-bar[data-metric="views|likes|comments|engagement"],
+                   Fuellbreiten via style="width:…%" auf .db-a / .db-b
+  Chart-Controls:  #chart-mode button[data-mode="daily|cumulative"],
+                   #chart-range button[data-range="7|30|all"] (aktiv = .active + aria-pressed)
+  Hero-Varianten:  #hero traegt GENAU EINE Modifier-Klasse:
+                   .hero--win-a | .hero--win-b | .hero--tie | .hero--gap
+                   (Varianten-Bloecke #hero-main / #hero-tie / #hero-gap; inaktive: [hidden])
+  Block-Diagramm:  #output-chart, pro Tag eine Spalte .out-col[data-date="YYYY-MM-DD"],
+                   oben .out-stack--a (Mika) / unten .out-stack--b (Tino),
+                   ein Video = <i class="blk" title="Titel · 12'480 Views">, Achsen-Label .out-tick
+  Historie:        #history-body, normale Zeile <tr>, Luecke <tr class="row-gap">
+  Skeleton:        Klasse .skeleton auf beliebiges datengetriebenes Element togglen
+  ============================================================
+-->
 
-<div class="shell">
+<main class="page">
 
-  <!-- ============ Sidebar ============ -->
-  <aside class="sidebar" id="sidebar">
-    <div class="side-top">
-      <div class="wordmark">Duell<span class="wordmark-dot">.</span></div>
+  <!-- ===== 1 · Header ===== -->
+  <header class="masthead" aria-label="Kopfbereich">
+    <p class="masthead-title">Duell</p>
+    <h1 class="masthead-sub">Mika <span class="vs-sep">vs.</span> Tino</h1>
+    <p class="masthead-date">Stand: <time id="stand-datum" datetime="2026-07-13">13.07.2026</time></p>
+  </header>
 
-      <nav class="nav" aria-label="Hauptnavigation">
-        <a class="nav-item active" href="#top">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="5" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="12" width="7" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="16" width="7" height="5" rx="2" stroke="currentColor" stroke-width="1.8"/></svg>
-          <span>Dashboard</span>
-        </a>
-        <a class="nav-item" href="#historie">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1 0 3-6.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3 4v5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Verlauf</span>
-        </a>
-        <a class="nav-item" href="https://www.tiktok.com/@mika.nature.enjoyer" target="_blank" rel="noopener">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none"><path d="M16.5 3v9.6a4.4 4.4 0 1 1-3.2-4.24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 3c.3 2.3 1.9 4 4.5 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Mika auf TikTok</span>
-          <svg class="nav-ext" viewBox="0 0 24 24" fill="none"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <a class="nav-item" href="https://www.tiktok.com/@tego..11" target="_blank" rel="noopener">
-          <svg class="nav-ic" viewBox="0 0 24 24" fill="none"><path d="M16.5 3v9.6a4.4 4.4 0 1 1-3.2-4.24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 3c.3 2.3 1.9 4 4.5 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Tino auf TikTok</span>
-          <svg class="nav-ext" viewBox="0 0 24 24" fill="none"><path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </nav>
+  <!-- ===== 2 · Hero: Sieger des Tages ===== -->
+  <section class="hero hero--win-a" id="hero" aria-label="Sieger des Tages">
+
+    <!-- Variante A/B: es gibt einen Tagessieger -->
+    <div class="hero-main" id="hero-main">
+      <div class="hero-avatar" aria-hidden="true">
+        <span class="avatar-ring"></span>
+        <span class="avatar-fallback" id="hero-avatar-initialen">M</span>
+        <img id="hero-avatar-img" src="assets/avatars/a.jpg" alt="" onerror="this.remove()">
+      </div>
+      <p class="hero-eyebrow">Sieger des Tages</p>
+      <h2 class="hero-name" id="hero-winner-name">Mika</h2>
+      <p class="hero-score" id="hero-score" aria-label="Punktestand 14 zu 9">14&nbsp;<span class="score-sep">:</span>&nbsp;9</p>
+      <p class="hero-breakdown" id="hero-breakdown">+3 Follower ×3&ensp;·&ensp;+3 Likes&ensp;·&ensp;1 Video ×2</p>
     </div>
 
-    <div class="side-bottom">
-      <div class="winner-card" id="winner-card">
-        <span class="winner-label">Tagessieger</span>
-        <span class="winner-name" id="winner-name">—</span>
-        <span class="winner-delta" id="winner-delta">—</span>
+    <!-- Variante Unentschieden (per .hero--tie aktivieren) -->
+    <div class="hero-tie" id="hero-tie" hidden>
+      <div class="tie-avatars" aria-hidden="true">
+        <span class="tie-avatar tie-avatar-a"><span class="avatar-fallback">M</span><img src="assets/avatars/a.jpg" alt="" onerror="this.remove()"></span>
+        <span class="tie-avatar tie-avatar-b"><span class="avatar-fallback">T</span><img src="assets/avatars/b.jpg" alt="" onerror="this.remove()"></span>
       </div>
-      <a class="nav-item nav-item-secondary" href="data/history.json" target="_blank" rel="noopener">
-        <svg class="nav-ic" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 12.9a1.7 1.7 0 0 1 .3-1.9 1.7 1.7 0 0 0-1.6-2.7 1.7 1.7 0 0 1-1.7-1 1.7 1.7 0 0 0-3-.6 1.7 1.7 0 0 1-1.9 0 1.7 1.7 0 0 0-3 .6 1.7 1.7 0 0 1-1.7 1A1.7 1.7 0 0 0 4.4 11a1.7 1.7 0 0 1 .3 1.9 1.7 1.7 0 0 0 1.2 2.6 1.7 1.7 0 0 1 1.3 1.4 1.7 1.7 0 0 0 2.8.9 1.7 1.7 0 0 1 2 0 1.7 1.7 0 0 0 2.8-.9 1.7 1.7 0 0 1 1.3-1.4 1.7 1.7 0 0 0 1.2-2.6Z" stroke="currentColor" stroke-width="1.4"/></svg>
-        <span>Rohdaten</span>
-      </a>
+      <p class="hero-eyebrow">Sieger des Tages</p>
+      <h2 class="hero-name hero-name--tie">Unentschieden</h2>
+      <p class="hero-score" id="hero-tie-score">11&nbsp;<span class="score-sep">:</span>&nbsp;11</p>
+      <p class="hero-breakdown">Beide Seiten punktgleich — das Duell geht weiter.</p>
     </div>
-  </aside>
-  <div class="scrim" id="scrim"></div>
 
-  <!-- ============ Hauptbereich ============ -->
-  <div class="main" id="top">
+    <!-- Variante Luecke (per .hero--gap aktivieren) -->
+    <div class="hero-gap" id="hero-gap" hidden>
+      <p class="hero-eyebrow">Sieger des Tages</p>
+      <h2 class="hero-name hero-name--gap">Kein Tagessieg</h2>
+      <p class="hero-breakdown" id="hero-gap-span">über 18 Tage — kein Tagessieg</p>
+    </div>
 
-    <header class="topbar">
-      <button class="menu-btn" id="menu-btn" aria-label="Navigation umschalten" aria-expanded="false">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
-      </button>
-      <div class="topbar-title">
-        <h1>Dashboard</h1>
-        <p>Follower-Duell im Überblick</p>
-      </div>
-      <div class="topbar-right">
-        <div class="snapshot-chip">
-          <span class="lbl">Letzter Snapshot</span>
-          <span class="value" id="last-date">—</span>
+    <ul class="hero-chips" aria-label="Duell-Statistiken">
+      <li class="chip">
+        <span class="chip-label">Streak</span>
+        <span class="chip-value" id="hero-streak">3 Tage in Folge</span>
+      </li>
+      <li class="chip">
+        <span class="chip-label">W:L · 7 Tage</span>
+        <span class="chip-value" id="hero-wl">5:2</span>
+      </li>
+      <li class="chip">
+        <span class="chip-label">Countdown</span>
+        <span class="chip-value" id="hero-countdown">nächstes Update in 14h 32m</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== 3 · Spruch des Tages ===== -->
+  <section class="quote" aria-label="Spruch des Tages">
+    <figure class="quote-inner">
+      <blockquote id="spruch-text">„Ein Vorsprung ist nur geliehen — verteidigt wird er täglich."</blockquote>
+      <figcaption>Spruch des Tages</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===== 4 · KPI-Reihe ===== -->
+  <section class="kpis" aria-label="Kennzahlen der Creator">
+    <h2 class="visually-hidden">Kennzahlen</h2>
+
+    <article class="kpi-card kpi-card--a" id="kpi-a">
+      <header class="kpi-head">
+        <span class="avatar avatar--a" aria-hidden="true"><span class="avatar-fallback">M</span><img src="assets/avatars/a.jpg" alt="" onerror="this.remove()"></span>
+        <div class="kpi-ident">
+          <h3 class="kpi-name">Mika</h3>
+          <a class="kpi-handle" href="https://www.tiktok.com/@mika.nature.enjoyer" target="_blank" rel="noopener">@mika.nature.enjoyer</a>
         </div>
-        <div class="avatars">
-          <span class="avatar avatar-a" title="Mika">M</span>
-          <span class="vs-chip" aria-hidden="true">vs</span>
-          <span class="avatar avatar-b" title="Tino">T</span>
+      </header>
+      <p class="kpi-followers">
+        <span class="kpi-big" id="kpi-followers-a">173</span>
+        <span class="kpi-unit">Follower</span>
+        <span class="delta delta--pos" id="kpi-followers-delta-a">+3 heute</span>
+      </p>
+      <dl class="kpi-sub">
+        <div class="kpi-sub-item"><dt>Likes gesamt</dt><dd id="kpi-likes-a">55'892</dd></div>
+        <div class="kpi-sub-item"><dt>Videos</dt><dd id="kpi-videos-a">38</dd></div>
+        <div class="kpi-sub-item"><dt>Views gesamt</dt><dd><span id="kpi-views-a">338'669</span> <span class="delta delta--pos delta--sm" id="kpi-views-delta-a">+1'204</span></dd></div>
+      </dl>
+    </article>
+
+    <article class="kpi-card kpi-card--b" id="kpi-b">
+      <header class="kpi-head">
+        <span class="avatar avatar--b" aria-hidden="true"><span class="avatar-fallback">T</span><img src="assets/avatars/b.jpg" alt="" onerror="this.remove()"></span>
+        <div class="kpi-ident">
+          <h3 class="kpi-name">Tino</h3>
+          <a class="kpi-handle" href="https://www.tiktok.com/@tego..11" target="_blank" rel="noopener">@tego..11</a>
+        </div>
+      </header>
+      <p class="kpi-followers">
+        <span class="kpi-big" id="kpi-followers-b">27</span>
+        <span class="kpi-unit">Follower</span>
+        <span class="delta delta--pos" id="kpi-followers-delta-b">+2 heute</span>
+      </p>
+      <dl class="kpi-sub">
+        <div class="kpi-sub-item"><dt>Likes gesamt</dt><dd id="kpi-likes-b">1'030</dd></div>
+        <div class="kpi-sub-item"><dt>Videos</dt><dd id="kpi-videos-b">12</dd></div>
+        <div class="kpi-sub-item"><dt>Views gesamt</dt><dd><span id="kpi-views-b">11'795</span> <span class="delta delta--neutral delta--sm" id="kpi-views-delta-b">Tracking läuft ab heute</span></dd></div>
+      </dl>
+    </article>
+  </section>
+
+  <!-- ===== 5 · Zuwachs-Chart ===== -->
+  <section class="card card--chart" aria-label="Follower-Zuwachs">
+    <header class="card-head">
+      <h2 class="card-title">Das Rennen</h2>
+      <div class="chart-controls">
+        <div class="seg" id="chart-mode" role="group" aria-label="Darstellungsmodus">
+          <button type="button" class="seg-btn active" data-mode="daily" aria-pressed="true">Pro Tag</button>
+          <button type="button" class="seg-btn" data-mode="cumulative" aria-pressed="false">Kumulativ</button>
+        </div>
+        <div class="pills" id="chart-range" role="group" aria-label="Zeitraum">
+          <button type="button" class="pill" data-range="7" aria-pressed="false">7</button>
+          <button type="button" class="pill" data-range="30" aria-pressed="false">30</button>
+          <button type="button" class="pill active" data-range="all" aria-pressed="true">Alles</button>
         </div>
       </div>
     </header>
+    <div class="chart-legend" aria-hidden="true">
+      <span class="lg lg--a">Mika</span>
+      <span class="lg lg--b">Tino</span>
+    </div>
+    <!-- .skeleton = Ladezustand; Phase 4 entfernt die Klasse, sobald der Chart gerendert ist -->
+    <div class="chart-frame skeleton">
+      <canvas id="chart-growth" aria-label="Liniendiagramm Follower-Zuwachs Mika und Tino" role="img"></canvas>
+    </div>
+  </section>
 
-    <!-- ===== KPI-Reihe ===== -->
-    <section class="kpi-row">
+  <!-- ===== 6 · Video-Battle ===== -->
+  <section class="battle" id="battle" aria-label="Video-Battle">
+    <h2 class="section-title">Video-Battle</h2>
 
-      <div class="kpi kpi-dark">
-        <span class="kpi-label">Duell-Stand</span>
-        <div class="kpi-value" id="kpi-lead-name">—</div>
-        <div class="kpi-delta" id="kpi-lead-delta">—</div>
-        <div class="vs-bar" aria-hidden="true"><span class="vs-a" id="vs-a"></span><span class="vs-b" id="vs-b"></span></div>
-        <div class="vs-caption"><span id="vs-pct-a">—</span><span id="vs-pct-b">—</span></div>
-      </div>
+    <!-- Head-to-Head: neuestes Video gegen neuestes Video -->
+    <div class="card card--h2h">
+      <div class="h2h">
+        <article class="h2h-side h2h-side--a" id="battle-video-a">
+          <div class="cover cover--a" data-field="cover" aria-hidden="true"><span class="cover-mono">M</span></div>
+          <h3 class="h2h-title" data-field="title">Sonnenaufgang überm Nebelmeer</h3>
+          <p class="h2h-age" data-field="age">vor 1 Tag</p>
+          <ul class="h2h-metrics">
+            <li><span data-field="views">12'480</span> <small>Views</small></li>
+            <li><span data-field="likes">1'024</span> <small>Likes</small></li>
+            <li><span data-field="comments">38</span> <small>Komm.</small></li>
+            <li><span data-field="er">8,6 %</span> <small>ER</small></li>
+          </ul>
+        </article>
 
-      <div class="kpi">
-        <span class="kpi-label"><span class="dot dot-a"></span>Follower Mika</span>
-        <div class="kpi-value" id="kpi-foll-a">0</div>
-        <div class="kpi-delta" id="kpi-delta-a">—</div>
-      </div>
-
-      <div class="kpi">
-        <span class="kpi-label"><span class="dot dot-b"></span>Follower Tino</span>
-        <div class="kpi-value" id="kpi-foll-b">0</div>
-        <div class="kpi-delta" id="kpi-delta-b">—</div>
-      </div>
-
-      <div class="kpi">
-        <span class="kpi-label">Uploads gesamt</span>
-        <div class="kpi-value kpi-value-split" id="kpi-videos">0 : 0</div>
-        <div class="kpi-delta" id="kpi-delta-videos">—</div>
-      </div>
-
-    </section>
-
-    <!-- ===== Mittlere Zeile ===== -->
-    <section class="mid-row">
-
-      <div class="card card-chart">
-        <div class="card-head">
-          <div class="head-left">
-            <h2>Follower-Verlauf</h2>
-            <div class="legend">
-              <span class="lg lg-a">Mika</span>
-              <span class="lg lg-b">Tino</span>
-            </div>
-          </div>
-          <div class="pills" id="range-pills" role="group" aria-label="Zeitraum">
-            <button class="pill" data-range="7d">7 Tage</button>
-            <button class="pill" data-range="30d">30 Tage</button>
-            <button class="pill active" data-range="all">Alles</button>
-          </div>
-        </div>
-        <div class="chartbox"><canvas id="chart-followers"></canvas></div>
-        <p class="note" id="note-followers"></p>
-      </div>
-
-      <div class="side-col">
-
-        <div class="card card-today">
-          <div class="card-head">
-            <h2>Heute vs. Gestern</h2>
-          </div>
-          <div class="today-grid" id="today-grid">
-            <div class="today-head">
-              <span></span><span class="tg-a">Mika</span><span class="tg-b">Tino</span>
-            </div>
-            <div class="today-block" data-when="today">
-              <span class="today-block-label">Heute</span>
-              <div class="today-row"><span class="today-metric">Follower</span><span id="today-foll-a">—</span><span id="today-foll-b">—</span></div>
-              <div class="today-row"><span class="today-metric">Likes</span><span id="today-likes-a">—</span><span id="today-likes-b">—</span></div>
-              <div class="today-row"><span class="today-metric">Videos</span><span id="today-videos-a">—</span><span id="today-videos-b">—</span></div>
-            </div>
-            <div class="today-block" data-when="yesterday">
-              <span class="today-block-label">Gestern</span>
-              <div class="today-row"><span class="today-metric">Follower</span><span id="yday-foll-a">—</span><span id="yday-foll-b">—</span></div>
-              <div class="today-row"><span class="today-metric">Likes</span><span id="yday-likes-a">—</span><span id="yday-likes-b">—</span></div>
-              <div class="today-row"><span class="today-metric">Videos</span><span id="yday-videos-a">—</span><span id="yday-videos-b">—</span></div>
-            </div>
-          </div>
-          <p class="note">„Views" liefert die TikTok-API nicht — Follower/Likes/Videos sind die täglichen Kennzahlen.</p>
-        </div>
-
-        <div class="card card-donut">
-          <div class="card-head">
-            <h2>Follower-Anteil</h2>
-          </div>
-          <div class="donut-wrap">
-            <div class="donut" id="donut">
-              <svg viewBox="0 0 120 120" class="donut-svg">
-                <circle cx="60" cy="60" r="50" class="donut-track"/>
-                <circle cx="60" cy="60" r="50" class="donut-fill" id="donut-fill"/>
-              </svg>
-              <div class="donut-center">
-                <span class="donut-pct" id="donut-pct">0%</span>
-                <span class="donut-caption">Mika</span>
+        <div class="h2h-mid">
+          <span class="vs-badge" aria-hidden="true">VS</span>
+          <div class="battle-bars" id="battle-bars" aria-label="Direktvergleich der Metriken">
+            <div class="duel-bar" data-metric="views">
+              <span class="db-label">Views</span>
+              <div class="db-row">
+                <span class="db-val db-val-a">12'480</span>
+                <div class="db-track"><span class="db-fill db-a" style="width:90%"></span><span class="db-fill db-b" style="width:10%"></span></div>
+                <span class="db-val db-val-b">1'375</span>
               </div>
             </div>
-            <div class="donut-meta">
-              <div class="donut-delta" id="donut-delta">—</div>
-              <div class="donut-legend">
-                <span class="dl-item"><span class="dot dot-a"></span>Mika</span>
-                <span class="dl-item"><span class="dot dot-b"></span>Tino</span>
+            <div class="duel-bar" data-metric="likes">
+              <span class="db-label">Likes</span>
+              <div class="db-row">
+                <span class="db-val db-val-a">1'024</span>
+                <div class="db-track"><span class="db-fill db-a" style="width:91%"></span><span class="db-fill db-b" style="width:9%"></span></div>
+                <span class="db-val db-val-b">96</span>
+              </div>
+            </div>
+            <div class="duel-bar" data-metric="comments">
+              <span class="db-label">Kommentare</span>
+              <div class="db-row">
+                <span class="db-val db-val-a">38</span>
+                <div class="db-track"><span class="db-fill db-a" style="width:78%"></span><span class="db-fill db-b" style="width:22%"></span></div>
+                <span class="db-val db-val-b">11</span>
+              </div>
+            </div>
+            <div class="duel-bar" data-metric="engagement">
+              <span class="db-label">Engagement</span>
+              <div class="db-row">
+                <span class="db-val db-val-a">8,6 %</span>
+                <div class="db-track"><span class="db-fill db-a" style="width:52%"></span><span class="db-fill db-b" style="width:48%"></span></div>
+                <span class="db-val db-val-b">7,8 %</span>
               </div>
             </div>
           </div>
         </div>
 
+        <article class="h2h-side h2h-side--b" id="battle-video-b">
+          <div class="cover cover--b" data-field="cover" aria-hidden="true"><span class="cover-mono">T</span></div>
+          <h3 class="h2h-title" data-field="title">POV: Montagmorgen</h3>
+          <p class="h2h-age" data-field="age">vor 2 Tagen</p>
+          <ul class="h2h-metrics">
+            <li><span data-field="views">1'375</span> <small>Views</small></li>
+            <li><span data-field="likes">96</span> <small>Likes</small></li>
+            <li><span data-field="comments">11</span> <small>Komm.</small></li>
+            <li><span data-field="er">7,8 %</span> <small>ER</small></li>
+          </ul>
+        </article>
       </div>
-    </section>
+    </div>
 
-    <!-- ===== Untere Zeile: Tabelle ===== -->
-    <section class="card card-table" id="historie">
-      <div class="card-head">
-        <h2>Tages-Historie</h2>
-        <div class="card-actions">
-          <button class="icon-btn" id="table-refresh" title="Neu laden" aria-label="Neu laden">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M18 4v4h-4M6 20v-4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
+    <!-- Top-Video der Woche -->
+    <article class="card card--topvideo" id="top-video" aria-label="Top-Video der Woche">
+      <div class="topvideo-crown" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 8l4.2 3.4L12 5l4.8 6.4L21 8l-1.6 9.5H4.6L3 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 20h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="cover cover--a cover--sm" data-field="cover" aria-hidden="true"><span class="cover-mono">M</span></div>
+      <div class="topvideo-body">
+        <p class="topvideo-eyebrow">Top-Video der Woche</p>
+        <h3 class="topvideo-title" data-field="title">Gewitterzelle über dem Tal</h3>
+        <p class="topvideo-owner">von <span data-field="owner">Mika</span> · <span data-field="age">vor 4 Tagen</span></p>
+        <ul class="topvideo-metrics">
+          <li><span data-field="views">24'611</span> <small>Views</small></li>
+          <li><span data-field="likes">2'308</span> <small>Likes</small></li>
+          <li><span data-field="comments">104</span> <small>Kommentare</small></li>
+          <li><span data-field="er">9,8 %</span> <small>ER</small></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- Letzte 6 Videos: Mika -->
+    <div class="video-strip">
+      <h3 class="strip-title strip-title--a">Letzte Videos · Mika</h3>
+      <div class="video-row" id="video-row-a">
+        <article class="video-card video-card--a" data-slot="0">
+          <div class="cover cover--a" data-field="cover" aria-hidden="true"><span class="cover-mono">M</span></div>
+          <h4 class="vc-title" data-field="title">Sonnenaufgang überm Nebelmeer</h4>
+          <p class="vc-age" data-field="age">vor 1 Tag</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">12'480</span><small>Views</small></li>
+            <li><span data-field="likes">1'024</span><small>Likes</small></li>
+            <li><span data-field="comments">38</span><small>Komm.</small></li>
+            <li><span data-field="er">8,6 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--a" data-slot="1">
+          <div class="cover cover--a" data-field="cover" aria-hidden="true"><span class="cover-mono">M</span></div>
+          <h4 class="vc-title" data-field="title">Reh im Morgengrauen — ganz nah</h4>
+          <p class="vc-age" data-field="age">vor 2 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">7'912</span><small>Views</small></li>
+            <li><span data-field="likes">689</span><small>Likes</small></li>
+            <li><span data-field="comments">21</span><small>Komm.</small></li>
+            <li><span data-field="er">9,0 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--a" data-slot="2">
+          <div class="cover cover--a" data-field="cover" aria-hidden="true"><span class="cover-mono">M</span></div>
+          <h4 class="vc-title" data-field="title">Gewitterzelle über dem Tal</h4>
+          <p class="vc-age" data-field="age">vor 4 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">24'611</span><small>Views</small></li>
+            <li><span data-field="likes">2'308</span><small>Likes</small></li>
+            <li><span data-field="comments">104</span><small>Komm.</small></li>
+            <li><span data-field="er">9,8 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--a" data-slot="3">
+          <div class="cover cover--a" data-field="cover" aria-hidden="true"><span class="cover-mono">M</span></div>
+          <h4 class="vc-title" data-field="title">Bergsee bei Windstille, 6 Uhr früh</h4>
+          <p class="vc-age" data-field="age">vor 6 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">5'340</span><small>Views</small></li>
+            <li><span data-field="likes">512</span><small>Likes</small></li>
+            <li><span data-field="comments">17</span><small>Komm.</small></li>
+            <li><span data-field="er">9,9 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--a" data-slot="4">
+          <div class="cover cover--a" data-field="cover" aria-hidden="true"><span class="cover-mono">M</span></div>
+          <h4 class="vc-title" data-field="title">Alpenglühen in Echtzeit</h4>
+          <p class="vc-age" data-field="age">vor 8 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">9'257</span><small>Views</small></li>
+            <li><span data-field="likes">803</span><small>Likes</small></li>
+            <li><span data-field="comments">29</span><small>Komm.</small></li>
+            <li><span data-field="er">9,0 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--a" data-slot="5">
+          <div class="cover cover--a" data-field="cover" aria-hidden="true"><span class="cover-mono">M</span></div>
+          <h4 class="vc-title" data-field="title">Nebelwald nach dem Regen</h4>
+          <p class="vc-age" data-field="age">vor 10 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">4'188</span><small>Views</small></li>
+            <li><span data-field="likes">377</span><small>Likes</small></li>
+            <li><span data-field="comments">12</span><small>Komm.</small></li>
+            <li><span data-field="er">9,3 %</span><small>ER</small></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <!-- Letzte 6 Videos: Tino -->
+    <div class="video-strip">
+      <h3 class="strip-title strip-title--b">Letzte Videos · Tino</h3>
+      <div class="video-row" id="video-row-b">
+        <article class="video-card video-card--b" data-slot="0">
+          <div class="cover cover--b" data-field="cover" aria-hidden="true"><span class="cover-mono">T</span></div>
+          <h4 class="vc-title" data-field="title">POV: Montagmorgen</h4>
+          <p class="vc-age" data-field="age">vor 2 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">1'375</span><small>Views</small></li>
+            <li><span data-field="likes">96</span><small>Likes</small></li>
+            <li><span data-field="comments">11</span><small>Komm.</small></li>
+            <li><span data-field="er">7,8 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--b" data-slot="1">
+          <div class="cover cover--b" data-field="cover" aria-hidden="true"><span class="cover-mono">T</span></div>
+          <h4 class="vc-title" data-field="title">Gym-Fail des Jahrhunderts</h4>
+          <p class="vc-age" data-field="age">vor 5 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">2'041</span><small>Views</small></li>
+            <li><span data-field="likes">188</span><small>Likes</small></li>
+            <li><span data-field="comments">24</span><small>Komm.</small></li>
+            <li><span data-field="er">10,4 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--b" data-slot="2">
+          <div class="cover cover--b" data-field="cover" aria-hidden="true"><span class="cover-mono">T</span></div>
+          <h4 class="vc-title" data-field="title">Kochen mit 3 Zutaten (es eskaliert)</h4>
+          <p class="vc-age" data-field="age">vor 9 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">867</span><small>Views</small></li>
+            <li><span data-field="likes">71</span><small>Likes</small></li>
+            <li><span data-field="comments">9</span><small>Komm.</small></li>
+            <li><span data-field="er">9,2 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--b" data-slot="3">
+          <div class="cover cover--b" data-field="cover" aria-hidden="true"><span class="cover-mono">T</span></div>
+          <h4 class="vc-title" data-field="title">Mein Setup-Upgrade für 20 Franken</h4>
+          <p class="vc-age" data-field="age">vor 12 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">1'102</span><small>Views</small></li>
+            <li><span data-field="likes">84</span><small>Likes</small></li>
+            <li><span data-field="comments">7</span><small>Komm.</small></li>
+            <li><span data-field="er">8,3 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--b" data-slot="4">
+          <div class="cover cover--b" data-field="cover" aria-hidden="true"><span class="cover-mono">T</span></div>
+          <h4 class="vc-title" data-field="title">Reaktion auf Mikas Nebelvideo</h4>
+          <p class="vc-age" data-field="age">vor 15 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">743</span><small>Views</small></li>
+            <li><span data-field="likes">58</span><small>Likes</small></li>
+            <li><span data-field="comments">13</span><small>Komm.</small></li>
+            <li><span data-field="er">9,6 %</span><small>ER</small></li>
+          </ul>
+        </article>
+        <article class="video-card video-card--b" data-slot="5">
+          <div class="cover cover--b" data-field="cover" aria-hidden="true"><span class="cover-mono">T</span></div>
+          <h4 class="vc-title" data-field="title">Erster Post — sagt nichts</h4>
+          <p class="vc-age" data-field="age">vor 19 Tagen</p>
+          <ul class="vc-metrics">
+            <li><span data-field="views">512</span><small>Views</small></li>
+            <li><span data-field="likes">44</span><small>Likes</small></li>
+            <li><span data-field="comments">6</span><small>Komm.</small></li>
+            <li><span data-field="er">9,8 %</span><small>ER</small></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7 · Tages-Output (Block-Diagramm) ===== -->
+  <section class="card card--output" aria-label="Tages-Output">
+    <header class="card-head">
+      <h2 class="card-title">Tages-Output</h2>
+      <p class="card-sub">Ein Block = ein Video · letzte 28 Tage · oben Mika, unten Tino</p>
+    </header>
+    <div class="output-scroll">
+      <div class="output" id="output-chart">
+        <div class="out-col" data-date="2026-06-16">
+          <div class="out-stack out-stack--a"><i class="blk" title="Nebelwald nach dem Regen · 4'188 Views"></i><i class="blk" title="Bergsee bei Windstille · 5'340 Views"></i></div>
+          <span class="out-tick">16.06.</span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-17">
+          <div class="out-stack out-stack--a"><i class="blk" title="Alpenglühen in Echtzeit · 9'257 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Erster Post — sagt nichts · 512 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-06-18">
+          <div class="out-stack out-stack--a"><i class="blk" title="Reh im Morgengrauen · 7'912 Views"></i><i class="blk" title="Bachlauf in Zeitlupe · 3'104 Views"></i><i class="blk" title="Abendrot über dem Grat · 6'450 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-19">
+          <div class="out-stack out-stack--a"><i class="blk" title="Morgentau im Gegenlicht · 2'876 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-20">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-21">
+          <div class="out-stack out-stack--a"><i class="blk" title="Gewitterzelle über dem Tal · 24'611 Views"></i><i class="blk" title="Regenfront zieht auf · 8'033 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Kochen mit 3 Zutaten · 867 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-06-22">
+          <div class="out-stack out-stack--a"><i class="blk" title="Nebelmeer am Morgen · 11'202 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-23">
+          <div class="out-stack out-stack--a"><i class="blk" title="Steinbock auf 2'800 m · 15'447 Views"></i><i class="blk" title="Bergsee-Spiegelung · 4'921 Views"></i></div>
+          <span class="out-tick">23.06.</span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-24">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-25">
+          <div class="out-stack out-stack--a"><i class="blk" title="Wolkenmeer-Timelapse · 7'318 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-26">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenaufgang überm Nebelmeer · 12'480 Views"></i><i class="blk" title="Gämsen im Schneefeld · 5'870 Views"></i><i class="blk" title="Alpenpanorama 360° · 3'660 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Reaktion auf Mikas Nebelvideo · 743 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-06-27">
+          <div class="out-stack out-stack--a"><i class="blk" title="Murmeltier-Pfiff · 6'214 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-28">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-29">
+          <div class="out-stack out-stack--a"><i class="blk" title="Gipfelkreuz im Morgenlicht · 9'980 Views"></i><i class="blk" title="Nebelschwaden im Hochtal · 4'407 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-30">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sommerregen im Wald · 5'126 Views"></i></div>
+          <span class="out-tick">30.06.</span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Setup-Upgrade für 20 Franken · 1'102 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-07-01">
+          <div class="out-stack out-stack--a"><i class="blk" title="Vollmond über der Kette · 13'552 Views"></i><i class="blk" title="Bergbach bei Nacht · 3'889 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-02">
+          <div class="out-stack out-stack--a"><i class="blk" title="Adler im Aufwind · 18'204 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-03">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-04">
+          <div class="out-stack out-stack--a"><i class="blk" title="Morgennebel im Moor · 6'731 Views"></i><i class="blk" title="Libelle in Superzeitlupe · 8'450 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Gym-Fail des Jahrhunderts · 2'041 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-07-05">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sturmwolken über dem See · 7'092 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-06">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenstrahlen im Tann · 10'115 Views"></i><i class="blk" title="Fuchs am Waldrand · 12'038 Views"></i><i class="blk" title="Bergpanorama im Regen · 2'977 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-07">
+          <div class="out-stack out-stack--a"><i class="blk" title="Tautropfen-Makro · 4'566 Views"></i></div>
+          <span class="out-tick">07.07.</span>
+          <div class="out-stack out-stack--b"><i class="blk" title="POV: Montagmorgen · 1'375 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-07-08">
+          <div class="out-stack out-stack--a"><i class="blk" title="Alpsommer-Impressionen · 6'843 Views"></i><i class="blk" title="Wasserfall nach Gewitter · 9'512 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-09">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-10">
+          <div class="out-stack out-stack--a"><i class="blk" title="Bergsee bei Windstille, 6 Uhr früh · 5'340 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Mein Rucksack-Setup · 934 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-07-11">
+          <div class="out-stack out-stack--a"><i class="blk" title="Alpenglühen in Echtzeit · 9'257 Views"></i><i class="blk" title="Ziegen blockieren den Weg · 21'774 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-12">
+          <div class="out-stack out-stack--a"><i class="blk" title="Reh im Morgengrauen — ganz nah · 7'912 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-13">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenaufgang überm Nebelmeer · 12'480 Views"></i></div>
+          <span class="out-tick">13.07.</span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Antwort an die Kommentare · 618 Views"></i></div>
         </div>
       </div>
-      <div class="table-wrap">
-        <table class="history-table">
-          <thead>
-            <tr>
-              <th>Datum</th>
-              <th>Mika +Follower</th>
-              <th>Mika +Likes</th>
-              <th>Tino +Follower</th>
-              <th>Tino +Likes</th>
-              <th>Tagessieger</th>
-            </tr>
-          </thead>
-          <tbody id="history-body">
-            <tr><td colspan="6" class="table-empty">Lädt…</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="note" id="note-table"></p>
-    </section>
+    </div>
+    <div class="output-legend" aria-hidden="true">
+      <span class="out-legend-item"><i class="swatch swatch--a"></i>Mika</span>
+      <span class="out-legend-item"><i class="swatch swatch--b"></i>Tino</span>
+      <span class="out-legend-note">Hover auf einen Block zeigt Titel &amp; Views</span>
+    </div>
+  </section>
 
-    <footer class="foot">
-      Datenquelle: öffentliche TikTok-Profile · tägliche Aktualisierung
-    </footer>
+  <!-- ===== 8 · Meilensteine ===== -->
+  <section class="milestones" aria-label="Meilensteine">
+    <h2 class="section-title">Meilensteine</h2>
+    <div class="milestone-grid">
 
-  </div>
-</div>
+      <article class="card milestone milestone--a" id="milestone-a">
+        <p class="ms-eyebrow">Mika</p>
+        <h3 class="ms-goal" id="milestone-ziel-a">Nächstes Ziel: 200 Follower</h3>
+        <div class="ms-bar" role="progressbar" aria-valuenow="173" aria-valuemin="0" aria-valuemax="200" aria-label="Fortschritt Mika: 173 von 200 Followern">
+          <span class="ms-fill ms-fill--a" id="milestone-bar-a" style="width:86.5%"></span>
+        </div>
+        <p class="ms-eta" id="milestone-eta-a"><span class="ms-current">173 / 200</span> · ~23.08.2026 <span class="ms-eta-rel">(in 41 Tagen)</span></p>
+      </article>
 
-<!-- Klassische Scripts: laufen IMMER, auch per Doppelklick (file://) -->
+      <article class="card milestone milestone--b" id="milestone-b">
+        <p class="ms-eyebrow">Tino</p>
+        <h3 class="ms-goal" id="milestone-ziel-b">Nächstes Ziel: 50 Follower</h3>
+        <div class="ms-bar" role="progressbar" aria-valuenow="27" aria-valuemin="0" aria-valuemax="50" aria-label="Fortschritt Tino: 27 von 50 Followern">
+          <span class="ms-fill ms-fill--b" id="milestone-bar-b" style="width:54%"></span>
+        </div>
+        <p class="ms-eta ms-eta--never" id="milestone-eta-b"><span class="ms-current">27 / 50</span> · bei dem Tempo: nie 💀</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== 9 · Historie ===== -->
+  <section class="card card--history" aria-label="Tages-Historie">
+    <header class="card-head">
+      <h2 class="card-title">Historie</h2>
+      <p class="card-sub">Tageswertungen · Punkte = Follower ×3 + Likes ×1 + Videos ×2</p>
+    </header>
+    <div class="table-scroll">
+      <table class="history" id="history-table">
+        <thead>
+          <tr class="thead-groups">
+            <th scope="col" rowspan="2">Datum</th>
+            <th scope="colgroup" colspan="4" class="th-group th-group--a">Mika</th>
+            <th scope="col" rowspan="2" class="th-center">Sieger</th>
+            <th scope="colgroup" colspan="4" class="th-group th-group--b">Tino</th>
+          </tr>
+          <tr class="thead-sub">
+            <th scope="col">+Follower</th>
+            <th scope="col">+Likes</th>
+            <th scope="col">+Videos</th>
+            <th scope="col">Punkte</th>
+            <th scope="col">Punkte</th>
+            <th scope="col">+Follower</th>
+            <th scope="col">+Likes</th>
+            <th scope="col">+Videos</th>
+          </tr>
+        </thead>
+        <tbody id="history-body">
+          <tr>
+            <td>13.07.2026</td>
+            <td class="num delta--pos">+3</td>
+            <td class="num delta--pos">+3</td>
+            <td class="num delta--pos">+1</td>
+            <td class="num pts pts--a">14</td>
+            <td class="td-center"><span class="win-badge win-badge--a">Mika</span></td>
+            <td class="num pts pts--b">9</td>
+            <td class="num delta--pos">+2</td>
+            <td class="num delta--pos">+1</td>
+            <td class="num delta--pos">+1</td>
+          </tr>
+          <tr>
+            <td>12.07.2026</td>
+            <td class="num delta--pos">+2</td>
+            <td class="num delta--pos">+5</td>
+            <td class="num">0</td>
+            <td class="num pts pts--a">11</td>
+            <td class="td-center"><span class="win-badge win-badge--a">Mika</span></td>
+            <td class="num pts pts--b">4</td>
+            <td class="num delta--pos">+1</td>
+            <td class="num delta--pos">+1</td>
+            <td class="num">0</td>
+          </tr>
+          <tr>
+            <td>11.07.2026</td>
+            <td class="num delta--pos">+4</td>
+            <td class="num delta--pos">+6</td>
+            <td class="num delta--pos">+1</td>
+            <td class="num pts pts--a">20</td>
+            <td class="td-center"><span class="win-badge win-badge--a">Mika</span></td>
+            <td class="num pts pts--b">2</td>
+            <td class="num">0</td>
+            <td class="num delta--pos">+2</td>
+            <td class="num">0</td>
+          </tr>
+          <tr>
+            <td>10.07.2026</td>
+            <td class="num delta--neg">−1</td>
+            <td class="num delta--pos">+2</td>
+            <td class="num">0</td>
+            <td class="num pts pts--a">−1</td>
+            <td class="td-center"><span class="win-badge win-badge--b">Tino</span></td>
+            <td class="num pts pts--b">8</td>
+            <td class="num delta--pos">+2</td>
+            <td class="num">0</td>
+            <td class="num delta--pos">+1</td>
+          </tr>
+          <tr class="row-gap">
+            <td>21.06. – 09.07.2026</td>
+            <td class="num" colspan="4">über 18 Tage — keine Tageswertung</td>
+            <td class="td-center">—</td>
+            <td class="num" colspan="4">über 18 Tage — keine Tageswertung</td>
+          </tr>
+          <tr>
+            <td>21.06.2026</td>
+            <td class="num delta--pos">+5</td>
+            <td class="num delta--pos">+9</td>
+            <td class="num delta--pos">+2</td>
+            <td class="num pts pts--a">28</td>
+            <td class="td-center"><span class="win-badge win-badge--a">Mika</span></td>
+            <td class="num pts pts--b">7</td>
+            <td class="num delta--pos">+1</td>
+            <td class="num delta--pos">+2</td>
+            <td class="num delta--pos">+1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== 10 · Footer ===== -->
+  <footer class="foot" aria-label="Fussbereich">
+    <p class="foot-line">
+      Datenquelle: <span class="foot-strong">tikwm</span>
+      <span class="foot-dot">·</span> Update täglich 06:00 UTC
+      <span class="foot-dot">·</span> <a href="https://github.com/lachmannmika-coder/tiktok-duel" target="_blank" rel="noopener">GitHub</a>
+    </p>
+    <p class="foot-updated">Letzte Aktualisierung: <time id="footer-updated" datetime="2026-07-13T06:04:00Z">13.07.2026, 06:04 UTC</time></p>
+  </footer>
+
+</main>
+
+<!-- Klassische Scripts (laufen auch via file://) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="src/config.js"></script>
 <script src="src/logic.js"></script>
 <script src="src/dashboard.js"></script>

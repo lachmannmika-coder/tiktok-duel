@@ -12,7 +12,7 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 | 0 | Setup, Tests grün, Skill-Inventur, package.json bereinigt | ✅ erledigt |
 | 1 | Daten-Pipeline v2 (P0-8: posts, videos.json, viewsTotal, Avatare, --dry-run, Fixtures) | ✅ erledigt |
 | 2 | Logik TDD (score, dayWinner datums-bewusst, streak, winLoss7d, velocity, milestone, heatmap, topVideo, headToHead, spruch, dailyRows/dayGains neu) | ✅ erledigt |
-| 3 | Design-System & Gerüst (Token-CSS, index.html-Skelett, Skeletons, responsive) + Design-Review ≥8 | ⬜ offen |
+| 3 | Design-System & Gerüst (Token-CSS, index.html-Skelett, Skeletons, responsive) + Design-Review ≥8 | ✅ erledigt |
 | 4a | UI-Verkabelung: Hero, KPIs, Charts, Meilensteine | ⬜ offen |
 | 4b | UI-Verkabelung: Video-Battle, Heatmap, Spruch, Historie | ⬜ offen |
 | 5 | Motion & Polish, PWA/Meta | ⬜ offen |
@@ -71,6 +71,28 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
   viewsTotal-Mischfälle, Gleichstand, Platzhalter-Vollständigkeit alle abgedeckt.
 - Plausibilität gegen echte Daten: Sieger 11.→12.07. Mika 50:1, Streak a×3, W:L 3:0.
 - Risiko notiert: heatmapData nutzt UTC-Tag (Posts spät abends CH rutschen auf Folgetag).
+
+## Phase-3-Befunde (Gate bestanden 14.07.2026)
+
+- Der Phase-3-Subagent war doch gelaufen (Session-Limit vor Commit): styles.css/index.html/
+  config.js/dashboard.js lagen fertig im Working Tree — geprüft und übernommen statt neu dispatcht.
+- styles.css komplett neu: Token-System (#07070a-Bühne, Hairlines, Gold #d4af6e / Platin #aeb6c2,
+  Metall-Gradients), Fraunces/Instrument Sans, tabular-nums, Skeletons, reduced-motion-Kill,
+  Breakpoints mobile-first 390→768→1080→1440. Nur transform/opacity animiert.
+- index.html: alle 10 Sektionen mit realistischen de-CH-Platzhaltern + ID-/data-Schema-Kommentar
+  als Andockpunkte für Phase 4. dashboard.js = Stub („Phase 4 verkabelt das Dashboard.").
+- Abweichung korrigiert: Agent hatte noch die ALTE Posting-Heatmap gebaut → ersetzt durch das
+  spezifizierte Daily-Output-Block-Diagramm (#output-chart): 28 Tages-Spalten, ein Video = ein
+  Block, Mika stapelt von der Achse nach oben (Gold), Tino nach unten (Platin), Wochen-Ticks,
+  Hover via title zeigt Titel + Views. Kein Library-Zusatz, reines Flex/Grid.
+- Design-Review (design:design-critique): erst 7,5/10 (Chart-Karte = totes Schwarz) → Fix:
+  .skeleton auf .chart-frame (Phase 4 entfernt die Klasse beim Rendern) → 8,5/10, Gate bestanden.
+- Gate-Beweis: Headless-CDP-Screenshots 390px (fullpage) + 1440px (5 Scroll-Abschnitte),
+  DOM-Check (28 Spalten, 37/8 Blöcke, keine .hm-Reste), Konsole fehlerfrei, npm test grün.
+- Notiert für Phase 6: --t-dim (#67655f) auf #07070a ≈ 3,5:1 — Mikrolabels unter WCAG-AA.
+- Screenshot-Tooling: Browser-Pane-Screenshot timeoutet weiterhin; shot.mjs-Muster verbessert
+  (Zufallsport + eigenes user-data-dir + taskkill /T /F, fullpage bei grossen Höhen vermeiden —
+  feTurbulence-Noise macht Riesen-Viewports zäh, stattdessen scroll=<y>-Abschnitte).
 
 ## Notizen für Folge-Sessions
 
