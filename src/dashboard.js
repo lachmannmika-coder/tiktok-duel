@@ -282,7 +282,7 @@
   }
 
   // =========================================================================
-  // Sektion 5: Chart "Das Rennen" (Chart.js 4, Kategorie-Achse mit echten Daten)
+  // Sektion 6: Chart "Das Rennen" (Chart.js 4, Kategorie-Achse mit echten Daten)
   // =========================================================================
 
   var chart = null;
@@ -624,7 +624,7 @@
   }
 
   // =========================================================================
-  // Sektion 6: Video-Battle (Head-to-Head, Duell-Balken, Top-Video, 6er-Reihen)
+  // Sektion 7: Video-Battle (Head-to-Head, Duell-Balken, Top-Video, 6er-Reihen)
   // =========================================================================
 
   function renderBattleBars(h) {
@@ -707,7 +707,7 @@
   }
 
   // =========================================================================
-  // Sektion 7: Tages-Output (Block-Diagramm, letzte 28 Tage bis juengster Snapshot)
+  // Sektion 5: Tages-Output (Block-Diagramm, letzte 28 Tage bis juengster Snapshot)
   // =========================================================================
 
   function appendBlocks(stack, list) {
@@ -863,8 +863,8 @@
 
     // ---- Phase 4b ----------------------------------------------------------
     renderSpruch(db, snaps);                       // Sektion 3  (#spruch-text)
-    renderVideoBattle(db, state.videos, snaps);    // Sektion 6  (#battle)
-    renderOutputChart(db, state.videos, snaps);    // Sektion 7  (#output-chart)
+    renderVideoBattle(db, state.videos, snaps);    // Sektion 7  (#battle)
+    renderOutputChart(db, state.videos, snaps);    // Sektion 5  (#output-chart)
     renderHistory(db, snaps);                      // Sektion 9  (#history-body)
   }
 

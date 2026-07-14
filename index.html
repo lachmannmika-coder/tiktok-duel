@@ -154,7 +154,166 @@
     </article>
   </section>
 
-  <!-- ===== 5 · Zuwachs-Chart ===== -->
+  <!-- ===== 5 · Tages-Output (Block-Diagramm) ===== -->
+  <section class="card card--output" aria-label="Tages-Output">
+    <header class="card-head">
+      <h2 class="card-title">Tages-Output</h2>
+      <p class="card-sub" id="output-sub">Ein Block = ein Video · letzte 28 Tage · oben Mika, unten Tino</p>
+      <!-- Leerzustand: videos.json (noch) nicht vorhanden — Phase 4b togglet -->
+      <p class="card-sub" id="output-empty" hidden>Video-Daten kommen mit dem nächsten Daten-Update.</p>
+    </header>
+    <div class="output-scroll">
+      <div class="output" id="output-chart">
+        <div class="out-col" data-date="2026-06-16">
+          <div class="out-stack out-stack--a"><i class="blk" title="Nebelwald nach dem Regen · 4'188 Views"></i><i class="blk" title="Bergsee bei Windstille · 5'340 Views"></i></div>
+          <span class="out-tick">16.06.</span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-17">
+          <div class="out-stack out-stack--a"><i class="blk" title="Alpenglühen in Echtzeit · 9'257 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Erster Post — sagt nichts · 512 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-06-18">
+          <div class="out-stack out-stack--a"><i class="blk" title="Reh im Morgengrauen · 7'912 Views"></i><i class="blk" title="Bachlauf in Zeitlupe · 3'104 Views"></i><i class="blk" title="Abendrot über dem Grat · 6'450 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-19">
+          <div class="out-stack out-stack--a"><i class="blk" title="Morgentau im Gegenlicht · 2'876 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-20">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-21">
+          <div class="out-stack out-stack--a"><i class="blk" title="Gewitterzelle über dem Tal · 24'611 Views"></i><i class="blk" title="Regenfront zieht auf · 8'033 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Kochen mit 3 Zutaten · 867 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-06-22">
+          <div class="out-stack out-stack--a"><i class="blk" title="Nebelmeer am Morgen · 11'202 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-23">
+          <div class="out-stack out-stack--a"><i class="blk" title="Steinbock auf 2'800 m · 15'447 Views"></i><i class="blk" title="Bergsee-Spiegelung · 4'921 Views"></i></div>
+          <span class="out-tick">23.06.</span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-24">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-25">
+          <div class="out-stack out-stack--a"><i class="blk" title="Wolkenmeer-Timelapse · 7'318 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-26">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenaufgang überm Nebelmeer · 12'480 Views"></i><i class="blk" title="Gämsen im Schneefeld · 5'870 Views"></i><i class="blk" title="Alpenpanorama 360° · 3'660 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Reaktion auf Mikas Nebelvideo · 743 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-06-27">
+          <div class="out-stack out-stack--a"><i class="blk" title="Murmeltier-Pfiff · 6'214 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-28">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-29">
+          <div class="out-stack out-stack--a"><i class="blk" title="Gipfelkreuz im Morgenlicht · 9'980 Views"></i><i class="blk" title="Nebelschwaden im Hochtal · 4'407 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-06-30">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sommerregen im Wald · 5'126 Views"></i></div>
+          <span class="out-tick">30.06.</span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Setup-Upgrade für 20 Franken · 1'102 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-07-01">
+          <div class="out-stack out-stack--a"><i class="blk" title="Vollmond über der Kette · 13'552 Views"></i><i class="blk" title="Bergbach bei Nacht · 3'889 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-02">
+          <div class="out-stack out-stack--a"><i class="blk" title="Adler im Aufwind · 18'204 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-03">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-04">
+          <div class="out-stack out-stack--a"><i class="blk" title="Morgennebel im Moor · 6'731 Views"></i><i class="blk" title="Libelle in Superzeitlupe · 8'450 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Gym-Fail des Jahrhunderts · 2'041 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-07-05">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sturmwolken über dem See · 7'092 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-06">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenstrahlen im Tann · 10'115 Views"></i><i class="blk" title="Fuchs am Waldrand · 12'038 Views"></i><i class="blk" title="Bergpanorama im Regen · 2'977 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-07">
+          <div class="out-stack out-stack--a"><i class="blk" title="Tautropfen-Makro · 4'566 Views"></i></div>
+          <span class="out-tick">07.07.</span>
+          <div class="out-stack out-stack--b"><i class="blk" title="POV: Montagmorgen · 1'375 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-07-08">
+          <div class="out-stack out-stack--a"><i class="blk" title="Alpsommer-Impressionen · 6'843 Views"></i><i class="blk" title="Wasserfall nach Gewitter · 9'512 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-09">
+          <div class="out-stack out-stack--a"></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-10">
+          <div class="out-stack out-stack--a"><i class="blk" title="Bergsee bei Windstille, 6 Uhr früh · 5'340 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Mein Rucksack-Setup · 934 Views"></i></div>
+        </div>
+        <div class="out-col" data-date="2026-07-11">
+          <div class="out-stack out-stack--a"><i class="blk" title="Alpenglühen in Echtzeit · 9'257 Views"></i><i class="blk" title="Ziegen blockieren den Weg · 21'774 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-12">
+          <div class="out-stack out-stack--a"><i class="blk" title="Reh im Morgengrauen — ganz nah · 7'912 Views"></i></div>
+          <span class="out-tick"></span>
+          <div class="out-stack out-stack--b"></div>
+        </div>
+        <div class="out-col" data-date="2026-07-13">
+          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenaufgang überm Nebelmeer · 12'480 Views"></i></div>
+          <span class="out-tick">13.07.</span>
+          <div class="out-stack out-stack--b"><i class="blk" title="Antwort an die Kommentare · 618 Views"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="output-legend" aria-hidden="true">
+      <span class="out-legend-item"><i class="swatch swatch--a"></i>Mika</span>
+      <span class="out-legend-item"><i class="swatch swatch--b"></i>Tino</span>
+      <span class="out-legend-note">Hover auf einen Block zeigt Titel &amp; Views</span>
+    </div>
+  </section>
+
+  <!-- ===== 6 · Zuwachs-Chart ===== -->
   <section class="card card--chart" aria-label="Follower-Zuwachs">
     <header class="card-head">
       <h2 class="card-title">Das Rennen</h2>
@@ -180,7 +339,7 @@
     </div>
   </section>
 
-  <!-- ===== 6 · Video-Battle ===== -->
+  <!-- ===== 7 · Video-Battle ===== -->
   <section class="battle" id="battle" aria-label="Video-Battle">
     <h2 class="section-title">Video-Battle</h2>
 
@@ -417,165 +576,6 @@
           </ul>
         </article>
       </div>
-    </div>
-  </section>
-
-  <!-- ===== 7 · Tages-Output (Block-Diagramm) ===== -->
-  <section class="card card--output" aria-label="Tages-Output">
-    <header class="card-head">
-      <h2 class="card-title">Tages-Output</h2>
-      <p class="card-sub" id="output-sub">Ein Block = ein Video · letzte 28 Tage · oben Mika, unten Tino</p>
-      <!-- Leerzustand: videos.json (noch) nicht vorhanden — Phase 4b togglet -->
-      <p class="card-sub" id="output-empty" hidden>Video-Daten kommen mit dem nächsten Daten-Update.</p>
-    </header>
-    <div class="output-scroll">
-      <div class="output" id="output-chart">
-        <div class="out-col" data-date="2026-06-16">
-          <div class="out-stack out-stack--a"><i class="blk" title="Nebelwald nach dem Regen · 4'188 Views"></i><i class="blk" title="Bergsee bei Windstille · 5'340 Views"></i></div>
-          <span class="out-tick">16.06.</span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-17">
-          <div class="out-stack out-stack--a"><i class="blk" title="Alpenglühen in Echtzeit · 9'257 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"><i class="blk" title="Erster Post — sagt nichts · 512 Views"></i></div>
-        </div>
-        <div class="out-col" data-date="2026-06-18">
-          <div class="out-stack out-stack--a"><i class="blk" title="Reh im Morgengrauen · 7'912 Views"></i><i class="blk" title="Bachlauf in Zeitlupe · 3'104 Views"></i><i class="blk" title="Abendrot über dem Grat · 6'450 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-19">
-          <div class="out-stack out-stack--a"><i class="blk" title="Morgentau im Gegenlicht · 2'876 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-20">
-          <div class="out-stack out-stack--a"></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-21">
-          <div class="out-stack out-stack--a"><i class="blk" title="Gewitterzelle über dem Tal · 24'611 Views"></i><i class="blk" title="Regenfront zieht auf · 8'033 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"><i class="blk" title="Kochen mit 3 Zutaten · 867 Views"></i></div>
-        </div>
-        <div class="out-col" data-date="2026-06-22">
-          <div class="out-stack out-stack--a"><i class="blk" title="Nebelmeer am Morgen · 11'202 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-23">
-          <div class="out-stack out-stack--a"><i class="blk" title="Steinbock auf 2'800 m · 15'447 Views"></i><i class="blk" title="Bergsee-Spiegelung · 4'921 Views"></i></div>
-          <span class="out-tick">23.06.</span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-24">
-          <div class="out-stack out-stack--a"></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-25">
-          <div class="out-stack out-stack--a"><i class="blk" title="Wolkenmeer-Timelapse · 7'318 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-26">
-          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenaufgang überm Nebelmeer · 12'480 Views"></i><i class="blk" title="Gämsen im Schneefeld · 5'870 Views"></i><i class="blk" title="Alpenpanorama 360° · 3'660 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"><i class="blk" title="Reaktion auf Mikas Nebelvideo · 743 Views"></i></div>
-        </div>
-        <div class="out-col" data-date="2026-06-27">
-          <div class="out-stack out-stack--a"><i class="blk" title="Murmeltier-Pfiff · 6'214 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-28">
-          <div class="out-stack out-stack--a"></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-29">
-          <div class="out-stack out-stack--a"><i class="blk" title="Gipfelkreuz im Morgenlicht · 9'980 Views"></i><i class="blk" title="Nebelschwaden im Hochtal · 4'407 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-06-30">
-          <div class="out-stack out-stack--a"><i class="blk" title="Sommerregen im Wald · 5'126 Views"></i></div>
-          <span class="out-tick">30.06.</span>
-          <div class="out-stack out-stack--b"><i class="blk" title="Setup-Upgrade für 20 Franken · 1'102 Views"></i></div>
-        </div>
-        <div class="out-col" data-date="2026-07-01">
-          <div class="out-stack out-stack--a"><i class="blk" title="Vollmond über der Kette · 13'552 Views"></i><i class="blk" title="Bergbach bei Nacht · 3'889 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-02">
-          <div class="out-stack out-stack--a"><i class="blk" title="Adler im Aufwind · 18'204 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-03">
-          <div class="out-stack out-stack--a"></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-04">
-          <div class="out-stack out-stack--a"><i class="blk" title="Morgennebel im Moor · 6'731 Views"></i><i class="blk" title="Libelle in Superzeitlupe · 8'450 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"><i class="blk" title="Gym-Fail des Jahrhunderts · 2'041 Views"></i></div>
-        </div>
-        <div class="out-col" data-date="2026-07-05">
-          <div class="out-stack out-stack--a"><i class="blk" title="Sturmwolken über dem See · 7'092 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-06">
-          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenstrahlen im Tann · 10'115 Views"></i><i class="blk" title="Fuchs am Waldrand · 12'038 Views"></i><i class="blk" title="Bergpanorama im Regen · 2'977 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-07">
-          <div class="out-stack out-stack--a"><i class="blk" title="Tautropfen-Makro · 4'566 Views"></i></div>
-          <span class="out-tick">07.07.</span>
-          <div class="out-stack out-stack--b"><i class="blk" title="POV: Montagmorgen · 1'375 Views"></i></div>
-        </div>
-        <div class="out-col" data-date="2026-07-08">
-          <div class="out-stack out-stack--a"><i class="blk" title="Alpsommer-Impressionen · 6'843 Views"></i><i class="blk" title="Wasserfall nach Gewitter · 9'512 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-09">
-          <div class="out-stack out-stack--a"></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-10">
-          <div class="out-stack out-stack--a"><i class="blk" title="Bergsee bei Windstille, 6 Uhr früh · 5'340 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"><i class="blk" title="Mein Rucksack-Setup · 934 Views"></i></div>
-        </div>
-        <div class="out-col" data-date="2026-07-11">
-          <div class="out-stack out-stack--a"><i class="blk" title="Alpenglühen in Echtzeit · 9'257 Views"></i><i class="blk" title="Ziegen blockieren den Weg · 21'774 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-12">
-          <div class="out-stack out-stack--a"><i class="blk" title="Reh im Morgengrauen — ganz nah · 7'912 Views"></i></div>
-          <span class="out-tick"></span>
-          <div class="out-stack out-stack--b"></div>
-        </div>
-        <div class="out-col" data-date="2026-07-13">
-          <div class="out-stack out-stack--a"><i class="blk" title="Sonnenaufgang überm Nebelmeer · 12'480 Views"></i></div>
-          <span class="out-tick">13.07.</span>
-          <div class="out-stack out-stack--b"><i class="blk" title="Antwort an die Kommentare · 618 Views"></i></div>
-        </div>
-      </div>
-    </div>
-    <div class="output-legend" aria-hidden="true">
-      <span class="out-legend-item"><i class="swatch swatch--a"></i>Mika</span>
-      <span class="out-legend-item"><i class="swatch swatch--b"></i>Tino</span>
-      <span class="out-legend-note">Hover auf einen Block zeigt Titel &amp; Views</span>
     </div>
   </section>
 
