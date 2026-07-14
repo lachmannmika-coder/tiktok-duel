@@ -180,6 +180,9 @@
   <section class="battle" id="battle" aria-label="Video-Battle">
     <h2 class="section-title">Video-Battle</h2>
 
+    <!-- Leerzustand: videos.json (noch) nicht vorhanden — Phase 4b togglet -->
+    <p class="card-sub" id="battle-empty" hidden>Video-Daten kommen mit dem nächsten Daten-Update.</p>
+
     <!-- Head-to-Head: neuestes Video gegen neuestes Video -->
     <div class="card card--h2h">
       <div class="h2h">
@@ -417,7 +420,9 @@
   <section class="card card--output" aria-label="Tages-Output">
     <header class="card-head">
       <h2 class="card-title">Tages-Output</h2>
-      <p class="card-sub">Ein Block = ein Video · letzte 28 Tage · oben Mika, unten Tino</p>
+      <p class="card-sub" id="output-sub">Ein Block = ein Video · letzte 28 Tage · oben Mika, unten Tino</p>
+      <!-- Leerzustand: videos.json (noch) nicht vorhanden — Phase 4b togglet -->
+      <p class="card-sub" id="output-empty" hidden>Video-Daten kommen mit dem nächsten Daten-Update.</p>
     </header>
     <div class="output-scroll">
       <div class="output" id="output-chart">

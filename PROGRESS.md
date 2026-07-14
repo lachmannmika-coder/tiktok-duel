@@ -14,7 +14,7 @@ selbst prüfen bevor N+1 startet. Referenz-Spezifikation: der Orchestrator-Promp
 | 2 | Logik TDD (score, dayWinner datums-bewusst, streak, winLoss7d, velocity, milestone, heatmap, topVideo, headToHead, spruch, dailyRows/dayGains neu) | ✅ erledigt |
 | 3 | Design-System & Gerüst (Token-CSS, index.html-Skelett, Skeletons, responsive) + Design-Review ≥8 | ✅ erledigt |
 | 4a | UI-Verkabelung: Hero, KPIs, Charts, Meilensteine | ✅ erledigt (Gesamt-Gate Phase 4 folgt nach 4b) |
-| 4b | UI-Verkabelung: Video-Battle, Block-Diagramm, Spruch, Historie | ⬜ offen — Agent starb am Session-Limit VOR dem ersten Edit |
+| 4b | UI-Verkabelung: Video-Battle, Block-Diagramm, Spruch, Historie | ✅ erledigt (Gate Phase 4 bestanden 14.07.2026) |
 | 5 | Motion & Polish, PWA/Meta | ⬜ offen |
 | 6 | QA & Abschluss-Review (≥8/10, Fix-Loops max. 3) | ⬜ offen |
 | Abschluss | PROGRESS final, lokale Commits, KEIN Push, Nachricht an Mika | ⬜ offen |
@@ -116,6 +116,28 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
 - Andockpunkt für 4b: zentrale `render(db)` mit markiertem Block `// ---- Phase 4b dockt hier an:`
   (renderSpruch, renderVideoBattle, renderOutputChart, renderHistory); Helfer `$`, `fmt`, `fmt1`,
   `signed`, `deDateFull/Short`, `deltaClass`, `setText`, `SEP`, `loadJSON`, `reducedMotion`, `state`.
+
+## Phase-4b-Befunde (Gate bestanden 14.07.2026)
+
+- Der 4b-Subagent war doch gelaufen (Abbruch nach den Edits): dashboard.js +373 Zeilen,
+  index.html +7 (Leerzustands-Hinweise #battle-empty/#output-empty, id auf #output-sub) —
+  geprüft und übernommen. Er hat sogar sein Prüfscript (verify.mjs, 3 Stufen via CDP)
+  und eine videos-test.json im Scratchpad hinterlassen.
+- Verkabelt: renderSpruch (spruchDesTages mit Sieger/Verlierer/Punkte, Unentschieden-Pool,
+  eigene Texte für Lücke/Verlauf-startet, " -- " → " — "), renderVideoBattle (headToHead,
+  Duell-Balken prozentual mit 0:0→50/50, topVideoOfWeek mit cover--a/b-Toggle, 6er-Reihen
+  mit [data-slot]-Fill + hidden-Rest), renderOutputChart (28 Tage bis jüngstes Snapshot-
+  Datum, Videos direkt aus videos.json nach UTC-Tag gruppiert, title="Titel · Views",
+  Ticks jeden 7. Tag + letzter), renderHistory (dailyRows neueste zuerst, deltaTd mit
+  Vorzeichen/Klassen, 0 neutral, Remis-Badge neutral, row-gap mit colspan 4+4).
+- Dreistufige Degradation verifiziert (Headless-CDP, DOM-Dumps):
+  (1) ?videos=videos-test.json → alles voll (Balken 90,1/9,9 %, ER de-CH „8,2 %",
+  slotsB=3 → Rest hidden, 28 Spalten, Ticks 15.06.…12.07.); (2) http ohne videos.json →
+  Platzhalter-Blöcke display:none, nur Hinweis sichtbar; (3) file:// → SEED, gleicher
+  Leerzustand, Spruch+Historie voll. Keine Exceptions; nur erwartete 404/CORS-Logs.
+- Cover-onerror-Fallback aufs Monogramm nachgewiesen (Fixture-Cover-URLs 404 → img entfernt).
+- npm test 89/89, node --check OK. `?videos=`-Override ergänzt (analog `?data=`).
+- Offen für Phase 5: Motion (Scroll-Reveals, nur transform/opacity), PWA-Manifest/Meta.
 
 ## Notizen für Folge-Sessions
 

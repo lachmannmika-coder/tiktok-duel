@@ -94,7 +94,19 @@
     countAnims[el.id] = requestAnimationFrame(step);
   }
 
-  var state = { db: null, mode: "daily", range: "all" };
+  var state = { db: null, videos: null, mode: "daily", range: "all" };
+
+  // data/videos.json entsteht erst mit dem ersten scharfen Action-Lauf.
+  // Fehlt sie (http 404) oder ist fetch unmoeglich (file://), liefert das null —
+  // die Video-Sektionen zeigen dann einen ehrlichen Leerzustand statt Platzhaltern.
+  // ?videos=<url> laedt gezielt eine Test-Datei (analog zu ?data=).
+  function loadVideos() {
+    if (typeof fetch === "undefined") return Promise.resolve(null);
+    var url = qparam("videos") || "data/videos.json";
+    return loadJSON(url).then(function (j) {
+      return (j && (Array.isArray(j.a) || Array.isArray(j.b))) ? j : null;
+    }).catch(function () { return null; });
+  }
 
   // =========================================================================
   // Sektion 2: Hero — Sieger des Tages
@@ -496,6 +508,347 @@
   }
 
   // =========================================================================
+  // Phase 4b — gemeinsame Video-Helfer
+  // =========================================================================
+
+  // Unix-Sekunden (createTime) -> "YYYY-MM-DD" (UTC-Tag, konsistent mit heatmapData).
+  function ctToDate(ct) { return new Date(ct * 1000).toISOString().slice(0, 10); }
+
+  function isoAddDays(iso, n) {
+    return new Date(Date.parse(iso + "T00:00:00Z") + n * 86400000).toISOString().slice(0, 10);
+  }
+
+  // Bezugsdatum fuer "vor N Tagen" und das 28-Tage-Fenster: juengstes Snapshot-Datum
+  // (Fallback: fetched-Datum der videos.json, sonst heute).
+  function refDate(snaps) {
+    if (snaps && snaps.length) return snaps[snaps.length - 1].date;
+    if (state.videos && state.videos.fetched) return state.videos.fetched;
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function ageText(video, ref) {
+    var d = L.daysBetween(ctToDate(video.createTime), ref);
+    if (d <= 0) return "heute";
+    return d === 1 ? "vor 1 Tag" : "vor " + d + " Tagen";
+  }
+
+  // Engagement-Rate de-CH mit Komma: 0.086 -> "8,6 %"
+  function erText(video) {
+    return (L.engagementRate(video) * 100).toFixed(1).replace(".", ",") + " %";
+  }
+
+  function videoTitle(v) { return (v.title || "").trim() || "Ohne Titel"; }
+
+  // true, sobald videos.json geladen ist UND mindestens eine Seite Videos hat.
+  function hasVideoData(videos) {
+    return !!(videos && ((videos.a && videos.a.length) || (videos.b && videos.b.length)));
+  }
+
+  // Cover-Bild in eine .cover-Box setzen; onerror faellt aufs Monogramm zurueck.
+  // (.cover ist position:relative + overflow:hidden — das Bild fuellt die Box.)
+  function setCover(box, video, side, initial) {
+    if (!box) return;
+    box.classList.remove("cover--a", "cover--b");
+    box.classList.add("cover--" + side);
+    var mono = box.querySelector(".cover-mono");
+    if (mono) mono.textContent = initial;
+    var old = box.querySelector("img");
+    if (old) old.remove();
+    if (!video || !video.cover) return;
+    var img = document.createElement("img");
+    img.alt = "";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.style.position = "absolute";
+    img.style.inset = "0";
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.addEventListener("error", function () { img.remove(); });
+    img.src = video.cover;
+    box.appendChild(img);
+  }
+
+  // [data-field]-Felder einer Videokarte fuellen (h2h-Seite, Top-Video, 6er-Slot).
+  function fillVideoCard(root, video, side, db, ref) {
+    if (!root) return;
+    function f(name) { return root.querySelector('[data-field="' + name + '"]'); }
+    function set(name, txt) { var el = f(name); if (el) el.textContent = txt; }
+    setCover(f("cover"), video, side, nick(db, side).charAt(0).toUpperCase());
+    if (!video) {
+      set("title", "Noch kein Video");
+      set("age", "—");
+      set("views", "—"); set("likes", "—"); set("comments", "—"); set("er", "—");
+      return;
+    }
+    set("title", videoTitle(video));
+    set("age", ageText(video, ref));
+    set("views", fmt(video.views || 0));
+    set("likes", fmt(video.likes || 0));
+    set("comments", fmt(video.comments || 0));
+    set("er", erText(video));
+  }
+
+  // =========================================================================
+  // Sektion 3: Spruch des Tages (deterministisch pro Tag, djb2 in logic.js)
+  // =========================================================================
+
+  function renderSpruch(db, snaps) {
+    var el = $("spruch-text");
+    if (!el) return;
+    var dw = L.dayWinner(snaps, CFG.scoring);
+    var text;
+    if (!dw.hasResult) {
+      text = "Das Duell startet — der erste Spruch kommt mit der ersten Tageswertung.";
+    } else if (dw.isGap) {
+      text = "Über " + dw.spanDays + " Tage keine Tageswertung — der Spruch des Tages pausiert bis zu frischen Zahlen.";
+    } else if (!dw.winner) {
+      text = L.spruchDesTages(dw.date, {
+        sieger: null,
+        verlierer: null,
+        punkte: fmt(dw.scoreA.total) + ":" + fmt(dw.scoreB.total),
+        unentschieden: true
+      });
+    } else {
+      var loser = dw.winner === "a" ? "b" : "a";
+      var ws = dw.winner === "a" ? dw.scoreA : dw.scoreB;
+      var ls = dw.winner === "a" ? dw.scoreB : dw.scoreA;
+      text = L.spruchDesTages(dw.date, {
+        sieger: nick(db, dw.winner),
+        verlierer: nick(db, loser),
+        punkte: fmt(ws.total) + ":" + fmt(ls.total)
+      });
+    }
+    // Pool-Templates nutzen ASCII " -- " als Gedankenstrich -> typografisch anheben.
+    el.textContent = "„" + text.split(" -- ").join(" — ") + "“";
+  }
+
+  // =========================================================================
+  // Sektion 6: Video-Battle (Head-to-Head, Duell-Balken, Top-Video, 6er-Reihen)
+  // =========================================================================
+
+  function renderBattleBars(h) {
+    var wrap = $("battle-bars");
+    if (!wrap) return;
+    var metrics = {
+      views: { get: function (v) { return v.views || 0; }, txt: function (v) { return fmt(v.views || 0); } },
+      likes: { get: function (v) { return v.likes || 0; }, txt: function (v) { return fmt(v.likes || 0); } },
+      comments: { get: function (v) { return v.comments || 0; }, txt: function (v) { return fmt(v.comments || 0); } },
+      engagement: { get: function (v) { return L.engagementRate(v); }, txt: erText }
+    };
+    Object.keys(metrics).forEach(function (key) {
+      var bar = wrap.querySelector('.duel-bar[data-metric="' + key + '"]');
+      if (!bar) return;
+      var m = metrics[key];
+      var va = h.a ? m.get(h.a) : 0;
+      var vb = h.b ? m.get(h.b) : 0;
+      var total = va + vb;
+      var pctA = total > 0 ? (va / total) * 100 : 50; // 0:0 -> 50/50
+      var fillA = bar.querySelector(".db-a"), fillB = bar.querySelector(".db-b");
+      if (fillA) fillA.style.width = pctA.toFixed(1) + "%";
+      if (fillB) fillB.style.width = (100 - pctA).toFixed(1) + "%";
+      var valA = bar.querySelector(".db-val-a"), valB = bar.querySelector(".db-val-b");
+      if (valA) valA.textContent = h.a ? m.txt(h.a) : "—";
+      if (valB) valB.textContent = h.b ? m.txt(h.b) : "—";
+    });
+  }
+
+  function renderTopVideo(db, videos, ref) {
+    var card = $("top-video");
+    if (!card) return;
+    var top = L.topVideoOfWeek(videos, ref);
+    // Nichts im 7-Tage-Fenster -> Karte weglassen statt altes Zeug zeigen.
+    card.style.display = top.video ? "" : "none";
+    if (!top.video) return;
+    fillVideoCard(card, top.video, top.side, db, ref);
+    var owner = card.querySelector('[data-field="owner"]');
+    if (owner) owner.textContent = nick(db, top.side);
+  }
+
+  function renderVideoRow(rowId, list, side, db, ref) {
+    var row = $(rowId);
+    if (!row) return;
+    var sorted = (list || []).slice()
+      .sort(function (x, y) { return y.createTime - x.createTime; })
+      .slice(0, 6);
+    var strip = row.closest(".video-strip");
+    if (strip) strip.style.display = sorted.length ? "" : "none";
+    var slots = row.querySelectorAll("[data-slot]");
+    for (var i = 0; i < slots.length; i++) {
+      if (i < sorted.length) {
+        slots[i].hidden = false;
+        fillVideoCard(slots[i], sorted[i], side, db, ref);
+      } else {
+        slots[i].hidden = true;
+      }
+    }
+  }
+
+  function renderVideoBattle(db, videos, snaps) {
+    var section = $("battle");
+    if (!section) return;
+    var ok = hasVideoData(videos);
+    var empty = $("battle-empty");
+    if (empty) empty.hidden = ok;
+    // Ohne Daten die Platzhalter-Karten NICHT stehen lassen (waeren erfundene Zahlen):
+    // alle Datenbloecke ausblenden, nur der Hinweis bleibt.
+    var blocks = section.querySelectorAll(".card--h2h, #top-video, .video-strip");
+    for (var i = 0; i < blocks.length; i++) blocks[i].style.display = ok ? "" : "none";
+    if (!ok) return;
+
+    var ref = refDate(snaps);
+    var h = L.headToHead(videos);
+    fillVideoCard($("battle-video-a"), h.a, "a", db, ref);
+    fillVideoCard($("battle-video-b"), h.b, "b", db, ref);
+    renderBattleBars(h);
+    renderTopVideo(db, videos, ref);
+    renderVideoRow("video-row-a", videos.a, "a", db, ref);
+    renderVideoRow("video-row-b", videos.b, "b", db, ref);
+  }
+
+  // =========================================================================
+  // Sektion 7: Tages-Output (Block-Diagramm, letzte 28 Tage bis juengster Snapshot)
+  // =========================================================================
+
+  function appendBlocks(stack, list) {
+    (list || []).forEach(function (v) {
+      var b = document.createElement("i");
+      b.className = "blk";
+      b.title = videoTitle(v) + " · " + fmt(v.views || 0) + " Views";
+      stack.appendChild(b);
+    });
+  }
+
+  function renderOutputChart(db, videos, snaps) {
+    var chartEl = $("output-chart");
+    if (!chartEl) return;
+    var section = chartEl.closest(".card--output");
+    var scroll = section ? section.querySelector(".output-scroll") : null;
+    var legend = section ? section.querySelector(".output-legend") : null;
+    var ok = hasVideoData(videos);
+    setToggle("output-empty", !ok);
+    setToggle("output-sub", ok);
+    if (scroll) scroll.style.display = ok ? "" : "none";
+    if (legend) legend.style.display = ok ? "" : "none";
+    chartEl.innerHTML = ""; // statische Platzhalter-Spalten immer ersetzen
+    if (!ok) return;
+
+    // Videos je UTC-Tag gruppieren (gleiche Tageslogik wie heatmapData; die
+    // title-Hover brauchen aber Titel + Views, daher direkt aus videos.json).
+    var byDate = { a: {}, b: {} };
+    ["a", "b"].forEach(function (side) {
+      (videos[side] || []).forEach(function (v) {
+        var d = ctToDate(v.createTime);
+        (byDate[side][d] = byDate[side][d] || []).push(v);
+      });
+    });
+
+    var DAYS = 28;
+    var end = refDate(snaps);
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < DAYS; i++) {
+      var date = isoAddDays(end, i - (DAYS - 1));
+      var col = document.createElement("div");
+      col.className = "out-col";
+      col.setAttribute("data-date", date);
+
+      var stackA = document.createElement("div");
+      stackA.className = "out-stack out-stack--a";
+      appendBlocks(stackA, byDate.a[date]);
+
+      var tick = document.createElement("span");
+      tick.className = "out-tick";
+      if (i % 7 === 0 || i === DAYS - 1) tick.textContent = deDateShort(date);
+
+      var stackB = document.createElement("div");
+      stackB.className = "out-stack out-stack--b";
+      appendBlocks(stackB, byDate.b[date]);
+
+      col.appendChild(stackA);
+      col.appendChild(tick);
+      col.appendChild(stackB);
+      frag.appendChild(col);
+    }
+    chartEl.appendChild(frag);
+  }
+
+  function setToggle(id, show) {
+    var el = $(id);
+    if (el) el.hidden = !show;
+  }
+
+  // =========================================================================
+  // Sektion 9: Historie (Tabelle aus dailyRows, neueste zuerst)
+  // =========================================================================
+
+  function td(cls, txt) {
+    var el = document.createElement("td");
+    if (cls) el.className = cls;
+    el.textContent = txt;
+    return el;
+  }
+
+  // Delta-Zelle: Vorzeichen + Farbe, die 0 bleibt neutral ("0", keine Klasse).
+  function deltaTd(n) {
+    var cls = "num" + (n > 0 ? " delta--pos" : n < 0 ? " delta--neg" : "");
+    return td(cls, n === 0 ? "0" : signed(n));
+  }
+
+  function ptsText(total) { return total < 0 ? "−" + fmt(-total) : fmt(total); }
+
+  function gapRow(r) {
+    var from = isoAddDays(r.date, -r.spanDays);
+    var tr = document.createElement("tr");
+    tr.className = "row-gap";
+    tr.appendChild(td(null, deDateShort(from) + " – " + deDateFull(r.date)));
+    var msg = "über " + r.spanDays + " Tage — keine Tageswertung";
+    var a = td("num", msg); a.colSpan = 4; tr.appendChild(a);
+    tr.appendChild(td("td-center", "—"));
+    var b = td("num", msg); b.colSpan = 4; tr.appendChild(b);
+    return tr;
+  }
+
+  function historyRow(db, r) {
+    var tr = document.createElement("tr");
+    tr.appendChild(td(null, deDateFull(r.date)));
+    tr.appendChild(deltaTd(r.deltaA.followers));
+    tr.appendChild(deltaTd(r.deltaA.likes));
+    tr.appendChild(deltaTd(r.deltaA.videos));
+    tr.appendChild(td("num pts pts--a", ptsText(r.scoreA.total)));
+    var mid = document.createElement("td");
+    mid.className = "td-center";
+    var badge = document.createElement("span");
+    badge.className = "win-badge" + (r.winner ? " win-badge--" + r.winner : "");
+    badge.textContent = r.winner ? nick(db, r.winner) : "Remis";
+    mid.appendChild(badge);
+    tr.appendChild(mid);
+    tr.appendChild(td("num pts pts--b", ptsText(r.scoreB.total)));
+    tr.appendChild(deltaTd(r.deltaB.followers));
+    tr.appendChild(deltaTd(r.deltaB.likes));
+    tr.appendChild(deltaTd(r.deltaB.videos));
+    return tr;
+  }
+
+  function renderHistory(db, snaps) {
+    var body = $("history-body");
+    if (!body) return;
+    var rows = L.dailyRows(snaps, CFG.scoring);
+    body.innerHTML = ""; // Platzhalter-Zeilen raus, alles dynamisch
+    if (!rows.length) {
+      var tr = document.createElement("tr");
+      tr.className = "row-gap";
+      var cell = td(null, "Noch keine Tageswertungen — die Historie füllt sich mit dem zweiten Schnappschuss.");
+      cell.colSpan = 10;
+      tr.appendChild(cell);
+      body.appendChild(tr);
+      return;
+    }
+    rows.forEach(function (r) {
+      body.appendChild(r.isGap ? gapRow(r) : historyRow(db, r));
+    });
+  }
+
+  // =========================================================================
   // Zentraler Render — bekommt das geladene db-Objekt
   // =========================================================================
 
@@ -508,20 +861,20 @@
     renderMilestones(db, snaps);
     drawChart();
 
-    // ---- Phase 4b dockt hier an: -----------------------------------------
-    // renderSpruch(db, snaps);           // Sektion 3  (#spruch-text)
-    // renderVideoBattle(db, videos);     // Sektion 6  (#battle, braucht data/videos.json)
-    // renderOutputChart(db, videos);     // Sektion 7  (#output-chart)
-    // renderHistory(db, snaps);          // Sektion 9  (#history-body)
-    // Hinweise: loadJSON("data/videos.json") wiederverwenden (catch -> null),
-    // Helfer fmt/signed/deDateFull/deltaClass/SEP/setText stehen oben bereit.
-    // ----------------------------------------------------------------------
+    // ---- Phase 4b ----------------------------------------------------------
+    renderSpruch(db, snaps);                       // Sektion 3  (#spruch-text)
+    renderVideoBattle(db, state.videos, snaps);    // Sektion 6  (#battle)
+    renderOutputChart(db, state.videos, snaps);    // Sektion 7  (#output-chart)
+    renderHistory(db, snaps);                      // Sektion 9  (#history-body)
   }
 
   function init() {
     initChartControls();
     startCountdown();
-    loadData().then(render).catch(function () { render(SEED); });
+    Promise.all([loadData(), loadVideos()]).then(function (res) {
+      state.videos = res[1];
+      render(res[0]);
+    }).catch(function () { render(SEED); });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
