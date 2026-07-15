@@ -57,6 +57,25 @@ Cleanes Vergleichs-Dashboard, Mika (rot) vs. Tino (blau):
 - `src/logic.js` — reine Berechnung (Zuwächse, Führung, Durchschnitte), DOM-frei, getestet.
 - `src/dashboard.js` — Anzeige und Charts. `src/config.js` — Farben und Update-Stunde.
 
+## Manuell aktualisieren („Jetzt aktualisieren“-Button)
+
+Neben „Stand: …“ oben auf der Seite gibt es einen Button, der die Erfassung sofort anstößt —
+zusätzlich zum täglichen Lauf, der unverändert weiterläuft. Beim ersten Klick fragt die Seite
+einmalig nach einem GitHub-Token; das bleibt nur in deinem Browser gespeichert (localStorage)
+und landet nie im Code oder auf der Seite.
+
+**Token erstellen (einmalig, ~2 Minuten):**
+1. github.com → Settings → Developer settings → **Fine-grained personal access tokens** → „Generate new token“.
+2. Repository access: **Only select repositories** → `tiktok-duel`.
+3. Permissions → Repository permissions → **Actions: Read and write** (Metadata: Read setzt GitHub automatisch). Sonst nichts.
+4. Ablaufdatum z. B. 90 Tage — läuft es ab, fragt die Seite einfach neu nach einem Token.
+
+Nach dem Klick zeigt die Statuszeile den Fortschritt („Daten-Lauf läuft …“), wartet auf die
+Veröffentlichung und aktualisiert die Zahlen dann von selbst — kein Neuladen nötig. Der ganze
+Vorgang dauert etwa 1–3 Minuten. „Keine neuen Daten“ heißt: Es gab seit dem letzten Lauf nichts
+Neues zu speichern — alles gut. Hinweis: Wegen einer Sperre bei der Datenquelle werden aktuell
+zuverlässig Follower/Likes aktualisiert, die Videoliste evtl. nicht.
+
 ## Wenn sich ein TikTok-Handle ändert
 
 Benennt einer von euch seinen TikTok-Account um, findet die Erfassung ihn nicht mehr und

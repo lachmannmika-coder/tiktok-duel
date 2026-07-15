@@ -180,3 +180,12 @@ Nicht vorhandene Skills: keine kritischen Lücken; TDD-Skill existiert.
   Fail-soft greift: künftige Action-Läufe behalten die letzte bekannte Videoliste, wenn
   posts weiter blockt — Follower/Likes/History aktualisieren sich normal weiter.
   Falls die Blockade bleibt: Alternative Videoquelle oder Challenge-fähiger Fetch nötig.
+- 15.07.2026: Manueller „Jetzt aktualisieren"-Button im Masthead (src/refresh.js).
+  Dispatcht daily.yml per REST (workflow_dispatch war schon aktiv, Workflow unverändert),
+  pollt Run + Pages-Deploy, rendert dann ohne Reload neu (window.DUELL_DASHBOARD.applyData
+  in dashboard.js). Auth: Fine-grained PAT (nur Actions R/W auf tiktok-duel), einmalig per
+  <dialog> abgefragt, liegt NUR im localStorage (Key duell.gh.pat); 401 → Token wird
+  verworfen und neu erfragt. Purer State-Machine-Kern (UMD wie config.js) mit 33 Tests in
+  test/refresh.test.js (Suite gesamt: 122). Bei file:// bleibt der Button versteckt.
+  Erfolgsmeldung verspricht bewusst nur Follower/Likes (tikwm-posts-Blockade s. o.).
+  „Keine neuen Daten" = Workflow lief, aber kein Commit — gültiger Ausgang.

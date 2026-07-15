@@ -38,6 +38,9 @@
                    ein Video = <i class="blk" title="Titel · 12'480 Views">, Achsen-Label .out-tick
   Historie:        #history-body, normale Zeile <tr>, Luecke <tr class="row-gap">
   Skeleton:        Klasse .skeleton auf beliebiges datengetriebenes Element togglen
+  Manueller Refresh (src/refresh.js): #refresh-btn (im Masthead, startet [hidden]),
+                   #refresh-status (Statuszeile), #refresh-dialog (Token-Dialog,
+                   Felder #refresh-token-input / #refresh-dialog-error)
   ============================================================
 -->
 
@@ -47,7 +50,10 @@
   <header class="masthead" aria-label="Kopfbereich">
     <p class="masthead-title">Duell</p>
     <h1 class="masthead-sub">Mika <span class="vs-sep">vs.</span> Tino</h1>
-    <p class="masthead-date">Stand: <time id="stand-datum" datetime="2026-07-13">13.07.2026</time></p>
+    <p class="masthead-date">Stand: <time id="stand-datum" datetime="2026-07-13">13.07.2026</time>
+      <button type="button" id="refresh-btn" class="refresh-btn" hidden>Jetzt aktualisieren</button>
+    </p>
+    <p class="refresh-status" id="refresh-status" role="status"></p>
   </header>
 
   <!-- ===== 2 · Hero: Sieger des Tages ===== -->
@@ -713,6 +719,24 @@
     <p class="foot-updated">Letzte Aktualisierung: <time id="footer-updated" datetime="2026-07-13T06:04:00Z">13.07.2026, 06:04 UTC</time></p>
   </footer>
 
+  <!-- Dialog fuer die einmalige Token-Eingabe (manueller Refresh) -->
+  <dialog id="refresh-dialog" class="refresh-dialog" aria-labelledby="refresh-dialog-title">
+    <form method="dialog">
+      <h2 id="refresh-dialog-title">GitHub-Token nötig</h2>
+      <p>Zum manuellen Aktualisieren braucht es einmalig ein Fine-grained Personal Access Token
+         für das Repository <code>tiktok-duel</code> (Berechtigung: <strong>Actions — Read and write</strong>).
+         Das Token bleibt nur in diesem Browser gespeichert.</p>
+      <label for="refresh-token-input">Personal Access Token</label>
+      <input id="refresh-token-input" type="password" autocomplete="off" spellcheck="false" required>
+      <p class="refresh-dialog-error" id="refresh-dialog-error" role="alert" hidden></p>
+      <p class="refresh-dialog-hint"><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Token auf GitHub erstellen</a></p>
+      <div class="refresh-dialog-actions">
+        <button type="button" value="cancel" id="refresh-cancel">Abbrechen</button>
+        <button type="submit" value="save" id="refresh-save">Speichern &amp; starten</button>
+      </div>
+    </form>
+  </dialog>
+
 </main>
 
 <!-- Klassische Scripts (laufen auch via file://) -->
@@ -720,5 +744,6 @@
 <script src="src/config.js"></script>
 <script src="src/logic.js"></script>
 <script src="src/dashboard.js"></script>
+<script src="src/refresh.js"></script>
 </body>
 </html>

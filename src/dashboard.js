@@ -898,4 +898,14 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
+
+  // Oeffentliche Mini-Schnittstelle fuer src/refresh.js (manueller Refresh):
+  // frische, bereits geparste JSONs direkt einspielen und neu rendern.
+  window.DUELL_DASHBOARD = {
+    applyData: function (db, videos) {
+      if (videos !== undefined) state.videos = videos;
+      render(db && db.snapshots ? db : SEED);
+    }
+  };
+
 })();

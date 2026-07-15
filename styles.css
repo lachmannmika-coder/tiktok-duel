@@ -1235,3 +1235,115 @@ ul { list-style: none; }
 
   .output { --out-col: 32px; --out-blk: 18px; --out-gap: 6px; }
 }
+
+/* ---------- 16 · Manueller Refresh ---------- */
+/* Geschwister von .seg-btn: gleiche Pille, gleiche Anmutung. */
+.refresh-btn {
+  margin-left: var(--sp-2);
+  padding: 4px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+  background: var(--c-surface-2);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--t-dim);
+  transition: color var(--dur-1) var(--ease-out);
+}
+.refresh-btn:hover,
+.refresh-btn:focus-visible { color: var(--t-hi); }
+
+/* Busy-Zustand: Spinner nur ohne prefers-reduced-motion, Text trägt sonst allein den Zustand */
+.refresh-btn[disabled] { opacity: 0.6; cursor: default; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .refresh-btn[disabled]::before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: var(--sp-1);
+    vertical-align: -1px;
+    border: 2px solid var(--hairline-strong);
+    border-top-color: var(--t-dim);
+    border-radius: var(--r-full);
+    animation: spin 0.9s linear infinite;
+  }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Statuszeile unter dem Masthead-Datum: reserviert Höhe gegen Layout-Shift */
+.refresh-status {
+  font-size: 0.72rem;
+  color: var(--t-dim);
+  min-height: 1.2em;
+}
+/* Kontrast --delta-neg (#e08c8c) auf --c-bg (#07070a): ~7.96:1 — erfüllt WCAG AA (>=4.5:1) */
+.refresh-status--error { color: var(--delta-neg); }
+
+/* Token-Dialog (native <dialog>) */
+.refresh-dialog {
+  max-width: 420px;
+  width: calc(100% - var(--sp-5));
+  padding: var(--sp-5) var(--sp-4);
+  background: var(--c-surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  color: var(--t-hi);
+  box-shadow: var(--shadow-card);
+}
+.refresh-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+
+.refresh-dialog h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: var(--sp-3);
+}
+.refresh-dialog p { font-size: 0.85rem; color: var(--t-mid); margin-bottom: var(--sp-3); }
+
+.refresh-dialog label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--t-dim);
+  margin-bottom: var(--sp-1);
+}
+
+.refresh-dialog input {
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--c-surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-xs);
+  color: var(--t-hi);
+  font: inherit;
+}
+
+/* Kontrast --delta-neg auf --c-surface-2 (#14141a): ~7.26:1 — erfüllt WCAG AA */
+.refresh-dialog-error { font-size: 0.72rem; color: var(--delta-neg); margin-top: var(--sp-2); }
+
+.refresh-dialog-hint a { color: var(--t-mid); border-bottom: 1px solid var(--hairline-strong); }
+
+.refresh-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+.refresh-dialog-actions button {
+  padding: 4px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-full);
+  background: var(--c-surface-2);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--t-dim);
+  transition: color var(--dur-1) var(--ease-out);
+}
+.refresh-dialog-actions button:hover,
+.refresh-dialog-actions button:focus-visible { color: var(--t-hi); }
+/* Submit: zurückhaltender Gold-Akzent, gleiche Familie wie .pill.active */
+.refresh-dialog-actions button[type="submit"] {
+  color: var(--c-gold);
+  border-color: var(--c-gold-deep);
+  background: var(--c-gold-soft);
+}

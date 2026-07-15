@@ -1,0 +1,15 @@
+{
+  "id": 900000003,
+  "name": "Daten-Update",
+  "node_id": "WFR_kwLOabc003",
+  "head_branch": "main",
+  "head_sha": "3333333333333333333333333333333333333333",
+  "run_number": 143,
+  "event": "workflow_dispatch",
+  "status": "completed",
+  "conclusion": "failure",
+  "workflow_id": 55512345,
+  "created_at": "2026-07-15T11:30:00Z",
+  "updated_at": "2026-07-15T11:31:22Z",
+  "html_url": "https://github.com/lachmannmika-coder/tiktok-duel/actions/runs/900000003"
+}
