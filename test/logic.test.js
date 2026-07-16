@@ -762,3 +762,41 @@ test("spruchDesTages: Unentschieden nutzt eigene Template-Menge", () => {
   assert.equal(s, L.spruchDesTages("2026-07-12", kontext));
   assert.ok(!s.includes("{"));
 });
+
+// ---------------------------------------------------------------------------
+// outputFromSnapshots — Tagesoutput aus der videos-Zaehlung der Snapshots.
+// Ersatzquelle fuer den Block-Chart, solange tikwm /api/user/posts blockt.
+// ---------------------------------------------------------------------------
+
+test("outputFromSnapshots: lueckenlose Tage -> Differenz je Seite", () => {
+  const out = L.outputFromSnapshots(gapSnaps());
+  // 11.07. -> 12.07.: A 37->38 = +1, B unveraendert
+  assert.deepEqual(out["2026-07-12"], { a: 1, b: 0 });
+  assert.deepEqual(out["2026-07-10"], { a: 0, b: 0 });
+});
+
+test("outputFromSnapshots: Luecke > 1 Tag ist keinem Tag zuordenbar -> kein Eintrag", () => {
+  const out = L.outputFromSnapshots(gapSnaps());
+  // 21.06. -> 09.07. sind 18 Tage: die +7 Videos lassen sich nicht attribuieren.
+  assert.equal(out["2026-07-09"], undefined);
+});
+
+test("outputFromSnapshots: erster Snapshot hat keinen Vorgaenger -> kein Eintrag", () => {
+  const out = L.outputFromSnapshots(gapSnaps());
+  assert.equal(out["2026-06-21"], undefined);
+});
+
+test("outputFromSnapshots: geloeschte Videos ergeben keinen negativen Output", () => {
+  const snaps = [
+    { date: "2026-07-11", a: { followers: 1, following: 1, likes: 1, videos: 38 }, b: { followers: 1, following: 1, likes: 1, videos: 12 } },
+    { date: "2026-07-12", a: { followers: 1, following: 1, likes: 1, videos: 35 }, b: { followers: 1, following: 1, likes: 1, videos: 12 } }
+  ];
+  // videos ist ein Bestand, keine Kumulation: -3 heisst geloescht, nicht "negativer Output".
+  assert.deepEqual(L.outputFromSnapshots(snaps)["2026-07-12"], { a: 0, b: 0 });
+});
+
+test("outputFromSnapshots: leere oder einelementige Liste -> leeres Ergebnis", () => {
+  assert.deepEqual(L.outputFromSnapshots([]), {});
+  assert.deepEqual(L.outputFromSnapshots(null), {});
+  assert.deepEqual(L.outputFromSnapshots([gapSnaps()[0]]), {});
+});

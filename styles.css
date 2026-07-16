@@ -952,6 +952,16 @@ ul { list-style: none; }
 .out-stack--a .blk { background: var(--c-gold);   box-shadow: 0 0 8px rgba(212, 175, 110, 0.28); }
 .out-stack--b .blk { background: var(--c-platin); box-shadow: 0 0 8px rgba(174, 182, 194, 0.20); }
 
+/* Nur gezaehlt, nicht belegt: Anzahl aus der Snapshot-Differenz, keine
+   Einzeldaten (tikwm blockt die Videoliste). Hohl statt gefuellt. */
+.out-stack .blk--est {
+  background: transparent;
+  box-shadow: none;
+  border: 1px dashed currentColor;
+}
+.out-stack--a .blk--est { color: var(--c-gold); }
+.out-stack--b .blk--est { color: var(--c-platin); }
+
 /* Tagesachse: durchgehende Hairline, Datums-Ticks nur wochenweise */
 .out-tick {
   border-top: 1px solid var(--hairline-strong);
@@ -985,6 +995,7 @@ ul { list-style: none; }
 }
 .swatch--a { background: var(--c-gold); }
 .swatch--b { background: var(--c-platin); }
+.swatch--est { background: transparent; border: 1px dashed var(--t-dim); }
 
 /* ---------- 11 · Meilensteine ---------- */
 .milestone-grid {

@@ -311,6 +311,27 @@
     return { hasResult: true, a: a, b: b, spanDays: spanDays, perDayA: perDay(a), perDayB: perDay(b) };
   }
 
+  // Tagesoutput je Seite aus der videos-Zaehlung der Snapshots (user/info),
+  // als Ersatzquelle fuer den Block-Chart, wenn videos.json keine Daten liefert.
+  // Zwei bewusste Einschraenkungen: nur Uebergaenge mit genau einem Tag Abstand
+  // sind einem Tag zuordenbar (groessere Luecken werden ausgelassen statt geraten),
+  // und videos ist ein Bestand, keine Kumulation -- geloeschte Videos ergeben 0,
+  // nie negativen Output. Rueckgabe: { "YYYY-MM-DD": { a, b } }.
+  function outputFromSnapshots(snaps) {
+    const out = {};
+    if (!snaps || snaps.length < 2) return out;
+    for (let i = 1; i < snaps.length; i++) {
+      const prev = snaps[i - 1];
+      const cur = snaps[i];
+      if (daysBetween(prev.date, cur.date) !== 1) continue;
+      out[cur.date] = {
+        a: Math.max(0, cur.a.videos - prev.a.videos),
+        b: Math.max(0, cur.b.videos - prev.b.videos)
+      };
+    }
+    return out;
+  }
+
   // ---------------------------------------------------------------------
   // Video-Funktionen (arbeiten auf data/videos.json, das fehlen/leer sein kann)
   // ---------------------------------------------------------------------
@@ -470,6 +491,7 @@
     delta, dayGains, yesterdayGains, leader, avgLikesPerVideo, totalGrowth, videosSinceStart,
     videosPerDay, followerSeries, nextUpdate, followerShare, dailyRows, filterByRange,
     daysBetween, score, dayWinner, streak, winLoss7d, velocity7d, milestoneProjection, viewsGain,
-    engagementRate, heatmapData, topVideoOfWeek, headToHead, spruchDesTages, spruchPool
+    engagementRate, heatmapData, topVideoOfWeek, headToHead, outputFromSnapshots,
+    spruchDesTages, spruchPool
   };
 });

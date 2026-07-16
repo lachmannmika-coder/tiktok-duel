@@ -719,13 +719,45 @@
     });
   }
 
+  // Blocke ohne Einzeldaten: Anzahl stammt aus der Snapshot-Differenz, nicht aus
+  // videos.json. Der Tooltip sagt das offen, statt Genauigkeit vorzutaeuschen.
+  function appendEstBlocks(stack, n, date) {
+    for (var i = 0; i < n; i++) {
+      var b = document.createElement("i");
+      b.className = "blk blk--est";
+      b.title = n + (n === 1 ? " Video" : " Videos") + " bis zur Messung am " +
+        deDateShort(date) + " · Einzeldaten nicht verfuegbar";
+      stack.appendChild(b);
+    }
+  }
+
+  // Ab welchem Tag die Ersatzquelle (Snapshot-Differenz) einspringt: videos.json
+  // ist nur bis zum juengsten enthaltenen Video belastbar. Der Snapshot des
+  // Folgetags zaehlt dieses Video schon mit (Abruf laeuft ~06:25 UTC), darum
+  // setzt der Ersatz erst zwei Tage danach an - sonst landet dasselbe Video
+  // zweimal im Chart. Ohne jede Videodaten (null) gilt der Ersatz ueberall.
+  function estStartDate(videos) {
+    var newest = null;
+    ["a", "b"].forEach(function (side) {
+      ((videos && videos[side]) || []).forEach(function (v) {
+        var d = ctToDate(v.createTime);
+        if (!newest || d > newest) newest = d;
+      });
+    });
+    return newest ? isoAddDays(newest, 2) : null;
+  }
+
   function renderOutputChart(db, videos, snaps) {
     var chartEl = $("output-chart");
     if (!chartEl) return;
     var section = chartEl.closest(".card--output");
     var scroll = section ? section.querySelector(".output-scroll") : null;
     var legend = section ? section.querySelector(".output-legend") : null;
-    var ok = hasVideoData(videos);
+    // Zweite Quelle: solange tikwm /api/user/posts blockt, bleibt videos.json
+    // eingefroren - die videos-Zaehlung aus user/info laeuft aber weiter.
+    var est = L.outputFromSnapshots(snaps);
+    var estStart = estStartDate(videos);
+    var ok = hasVideoData(videos) || Object.keys(est).length > 0;
     setToggle("output-empty", !ok);
     setToggle("output-sub", ok);
     if (scroll) scroll.style.display = ok ? "" : "none";
@@ -746,15 +778,20 @@
     var DAYS = 28;
     var end = refDate(snaps);
     var frag = document.createDocumentFragment();
+    var estShown = false;
     for (var i = 0; i < DAYS; i++) {
       var date = isoAddDays(end, i - (DAYS - 1));
       var col = document.createElement("div");
       col.className = "out-col";
       col.setAttribute("data-date", date);
 
+      var useEst = !estStart || date >= estStart;
+      if (useEst && ((est[date] || {}).a || (est[date] || {}).b)) estShown = true;
+
       var stackA = document.createElement("div");
       stackA.className = "out-stack out-stack--a";
-      appendBlocks(stackA, byDate.a[date]);
+      if (useEst) appendEstBlocks(stackA, (est[date] || {}).a || 0, date);
+      else appendBlocks(stackA, byDate.a[date]);
 
       var tick = document.createElement("span");
       tick.className = "out-tick";
@@ -762,7 +799,8 @@
 
       var stackB = document.createElement("div");
       stackB.className = "out-stack out-stack--b";
-      appendBlocks(stackB, byDate.b[date]);
+      if (useEst) appendEstBlocks(stackB, (est[date] || {}).b || 0, date);
+      else appendBlocks(stackB, byDate.b[date]);
 
       col.appendChild(stackA);
       col.appendChild(tick);
@@ -770,6 +808,7 @@
       frag.appendChild(col);
     }
     chartEl.appendChild(frag);
+    setToggle("output-legend-est", estShown);
   }
 
   function setToggle(id, show) {
