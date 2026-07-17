@@ -146,6 +146,21 @@
         "likes": 1030,
         "videos": 12
       }
+    },
+    {
+      "date": "2026-07-17",
+      "a": {
+        "followers": 176,
+        "following": 464,
+        "likes": 56342,
+        "videos": 47
+      },
+      "b": {
+        "followers": 31,
+        "following": 34,
+        "likes": 1072,
+        "videos": 13
+      }
     }
   ]
 }
